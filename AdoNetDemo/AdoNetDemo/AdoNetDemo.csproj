@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtorDAO.cs" />
     <Compile Include="CategoriaDAO.cs" />
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="GenericDAO.cs" />

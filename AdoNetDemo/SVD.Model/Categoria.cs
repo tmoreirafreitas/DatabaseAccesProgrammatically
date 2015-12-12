@@ -11,7 +11,7 @@ namespace SVD.Model
         public int? ID { get; set; }
         public string Descricao { get; set; }
         public decimal ValorLocacao { get; set; }
-        private List<Filme> Filmes { get; private set; }
+        public List<Filme> Filmes { get; private set; }
 
         public bool AddFilme(Filme filme)
         {
