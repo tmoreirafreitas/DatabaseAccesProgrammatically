@@ -19,13 +19,12 @@ namespace AdoNetDemo
         /// da tabela como parâmetro.
         /// e o parâmetro "values" é um array com os valores a serem consultados na tabela.
         /// </summary>
-        /// <param name="query">string query</param>
-        /// <param name="namesOfColuns">string[] namesOfColuns = null</param>
-        /// <param name="valuesOfColuns">object[] valuesOfColuns = null</param>
-        /// <returns></returns>
-        public SqlDataReader ExecuteQuery(string query, string[] namesOfColuns = null, object[] valuesOfColuns = null)
+        /// <param name="query">query</param>
+        /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
+        /// <returns>dataReader</returns>
+        public SqlDataReader ExecuteQuery(string query, Dictionary<string, object> ColumnsAndValues = null)
         {
-            SqlDataReader sdr = null;
+            SqlDataReader dataReader = null;
 
             try
             {
@@ -35,63 +34,62 @@ namespace AdoNetDemo
                     {
                         command.CommandText = query;
                         command.Connection.Open();
+                        if (ColumnsAndValues != null)
+                            foreach (var item in ColumnsAndValues)
+                                command.Parameters.AddWithValue(item.Key, item.Value);
 
-                        if (namesOfColuns != null && valuesOfColuns != null)
-                            for (int i = 0; i < namesOfColuns.Length; i++)
-                                command.Parameters.AddWithValue(namesOfColuns[i], valuesOfColuns[i]);
-
-                        sdr = command.ExecuteReader();
+                        dataReader = command.ExecuteReader();
                     }
                 }
 
-                return sdr;
+                return dataReader;
             }
-            catch (SystemException myException)
+            catch (Exception ex)
             {
-                throw new SystemException(myException.Message);
+                throw new Exception(ex.Message);
             }
         }
 
         /// <summary>
         /// Método que executa para execução dos comandos Insert, Update e Delete
+        /// O primeiro argumento é uma quary sql. Exemplo: "INSERT INTO Category(Id, CategoryName) VALUES (@ID, @CategoryName)"
+        /// O Segundo argumento opcional é um dicionário, temos uma par de string e um object, onde o primeiro é o parâmetro
+        /// da coluna e o segundo o seu respectivo valor. Exemplo: ColumnsAndValues.Add("@ID", element.ID)
         /// </summary>
-        /// <param name="query">string query</param>
-        /// <param name="namesOfColuns">string[] namesOfColuns = null</param>
-        /// <param name="valuesOfColuns">object[] valuesOfColuns = null</param>
+        /// <param name="query"></param>
+        /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns></returns>
-        public int ExecuteCommand(string query, string[] namesOfColuns = null, object[] valuesOfColuns = null)
+        public int ExecuteCommand(string query, Dictionary<string, object> ColumnsAndValues = null)
         {
             int result = 0;
             try
-            {
+            {                
                 using (SqlCommand command = new SqlCommand())
                 {
                     using (command.Connection = ConnectionFactory.CreateConnection())
                     {
                         command.CommandText = query;
-
-                        if (namesOfColuns != null && valuesOfColuns != null)
-                            for (int i = 0; i < namesOfColuns.Length; i++)
-                                command.Parameters.AddWithValue(namesOfColuns[i], valuesOfColuns[i]);
-
                         command.Connection.Open();
+                        if (ColumnsAndValues != null)
+                            foreach (var item in ColumnsAndValues)
+                                command.Parameters.AddWithValue(item.Key, item.Value);
+
                         result = command.ExecuteNonQuery();
-                        command.Connection.Close();
                     }
                 }
                 return result;
             }
 
-            catch (SystemException myException)
+            catch (Exception ex)
             {
-                throw new SystemException(myException.Message);
+                throw new Exception(ex.Message);
             }
         }
 
         /// <summary>
         /// Método que pega o próximo ID de uma entidade que será inserida na tabela.
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <param name="tableName">tableName</param>
         /// <returns>ID</returns>
         public int GetNextId(string tableName)
         {
@@ -99,17 +97,16 @@ namespace AdoNetDemo
 
             try
             {
-                SqlDataReader sdr = ExecuteQuery("SELECT MAX(Id) FROM [dbo]." + "[" + tableName + "]");
-
-                while (sdr.Read())
+                using (SqlDataReader dataReader = ExecuteQuery("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
                 {
-                    if (sdr.IsDBNull(0))
-                        result = 0;
-                    else
-                        result = sdr.GetInt32(0);
+                    if (dataReader.Read())
+                    {
+                        if (dataReader.IsDBNull(0))
+                            result = 0;
+                        else
+                            result = dataReader.GetInt32(0);
+                    }                    
                 }
-
-                sdr.Close();
 
                 if (result == 0)
                     return 1;
@@ -117,9 +114,9 @@ namespace AdoNetDemo
                     return (result + 1);
             }
 
-            catch (SystemException ex)
+            catch (Exception ex)
             {
-                throw new SystemException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
     }
