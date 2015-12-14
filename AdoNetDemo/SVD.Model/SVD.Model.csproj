@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ator.cs" />
+    <Compile Include="Atuacao.cs" />
     <Compile Include="Categoria.cs" />
     <Compile Include="Filme.cs" />
     <Compile Include="Genero.cs" />
