@@ -89,6 +89,22 @@ namespace AdoNetDemo
             }
         }
 
+        public Categoria GetBy(string descricao)
+        {
+            try
+            {
+                string sql = @"SELECT [id],[descricao],[valor_locacao] FROM [dbo].[Categoria] WHERE descricao = @descricao";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@descricao", descricao);
+
+                return Populate(ExecuteQuery(sql, parametros));
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
         public List<Categoria> GetAll()
         {
             try
