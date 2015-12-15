@@ -10,5 +10,6 @@ namespace SVD.Model
     {
         public int ID { get; set; }
         public string Nome { get; set; }
+        public List<Filme> Atuacoes { get; set; }
     }
 }
