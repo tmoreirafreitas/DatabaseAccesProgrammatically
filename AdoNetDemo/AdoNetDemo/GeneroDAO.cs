@@ -73,6 +73,21 @@ namespace AdoNetDemo
             }
         }
 
+        public Genero GetBy(string descricao)
+        {
+            try
+            {
+                string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE descricao = @descricao";
+                var parametro = new Dictionary<string, object>();
+                parametro.Add("@descricao", descricao);
+                return Populate(ExecuteQuery(sql, parametro));
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
         public List<Genero> GetAll()
         {
             try
