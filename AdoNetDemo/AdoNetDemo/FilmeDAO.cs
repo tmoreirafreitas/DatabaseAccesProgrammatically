@@ -160,6 +160,83 @@ namespace AdoNetDemo
             }
         }
 
+        public List<Filme> GetByCategoria(string descricao)
+        {
+            var categoria = categoriaDAO.GetBy(descricao);
+            var filmes = new List<Filme>();
+
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idcategoria = @idcategoria";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idcategoria", categoria.ID);
+                var dataReader = ExecuteQuery(sql, parametros);
+
+                while (dataReader.Read())
+                    filmes.Add(Populate(dataReader));
+
+                return filmes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Filme> GetByGenero(string descricao)
+        {
+            var genero = generoDAO.GetBy(descricao);
+            var filmes = new List<Filme>();
+
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idgenero", genero.ID);
+                var dataReader = ExecuteQuery(sql, parametros);
+
+                while (dataReader.Read())
+                    filmes.Add(Populate(dataReader));
+
+                return filmes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Filme> GetByGeneroAndCategoria(Genero genero, Categoria categoria)
+        {
+            var filmes = new List<Filme>();
+
+            try
+            {
+                if (genero != null)
+                    if (!string.IsNullOrEmpty(genero.Descricao))
+                        genero = generoDAO.GetBy(genero.Descricao);
+
+                if (categoria != null)
+                    if (!string.IsNullOrEmpty(categoria.Descricao))
+                        categoria = categoriaDAO.GetBy(categoria.Descricao);
+
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idgenero", genero.ID);
+                parametros.Add("@idcategoria", categoria.ID);
+                var dataReader = ExecuteQuery(sql, parametros);
+
+                while (dataReader.Read())
+                    filmes.Add(Populate(dataReader));
+
+                return filmes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
         public List<Filme> GetAll()
         {
             var filmes = new List<Filme>();
