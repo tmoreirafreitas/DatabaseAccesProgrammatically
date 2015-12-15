@@ -42,9 +42,15 @@
     <Compile Include="Ator.cs" />
     <Compile Include="Atuacao.cs" />
     <Compile Include="Categoria.cs" />
+    <Compile Include="Copia.cs" />
+    <Compile Include="Endereco.cs" />
     <Compile Include="Filme.cs" />
     <Compile Include="Genero.cs" />
+    <Compile Include="ItemLocacao.cs" />
+    <Compile Include="Locacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socio.cs" />
+    <Compile Include="Telefone.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

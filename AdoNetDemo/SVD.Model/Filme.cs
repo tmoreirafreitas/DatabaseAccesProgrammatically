@@ -12,5 +12,6 @@ namespace SVD.Model
         public Categoria Categoria { get; set; }
         public string Titulo { get; set; }
         public string Duracao { get; set; }
+        public List<Copia> Copias { get; set; }
     }
 }
