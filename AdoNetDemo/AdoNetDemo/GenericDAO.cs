@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,9 @@ namespace AdoNetDemo
         /// <param name="query">query</param>
         /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns>dataReader</returns>
-        public SqlDataReader ExecuteQuery(string query, Dictionary<string, object> ColumnsAndValues = null)
+        protected IDataReader ExecuteQuery(string query, Dictionary<string, object> ColumnsAndValues = null)
         {
-            SqlDataReader dataReader = null;
+            IDataReader dataReader = null;
 
             try
             {
@@ -44,9 +45,9 @@ namespace AdoNetDemo
 
                 return dataReader;
             }
-            catch (Exception ex)
+            catch (SystemException ex)
             {
-                throw new Exception(ex.Message);
+                throw new SystemException(ex.Message);
             }
         }
 
@@ -59,7 +60,7 @@ namespace AdoNetDemo
         /// <param name="query"></param>
         /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns></returns>
-        public int ExecuteCommand(string query, Dictionary<string, object> ColumnsAndValues = null)
+        protected int ExecuteCommand(string query, Dictionary<string, object> ColumnsAndValues = null)
         {
             int result = 0;
             try
@@ -79,10 +80,9 @@ namespace AdoNetDemo
                 }
                 return result;
             }
-
-            catch (Exception ex)
+            catch (SystemException ex)
             {
-                throw new Exception(ex.Message);
+                throw new SystemException(ex.Message);
             }
         }
 
@@ -91,20 +91,23 @@ namespace AdoNetDemo
         /// </summary>
         /// <param name="tableName">tableName</param>
         /// <returns>ID</returns>
-        public int GetNextId(string tableName)
+        protected int GetNextId(string tableName)
         {
             int result = 0;
+            int _id;
 
             try
             {
-                using (SqlDataReader dataReader = ExecuteQuery("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
+                using (IDataReader dataReader = ExecuteQuery("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
                 {
+                    _id = dataReader.GetOrdinal("id");
+
                     if (dataReader.Read())
                     {
-                        if (dataReader.IsDBNull(0))
+                        if (dataReader.IsDBNull(_id))
                             result = 0;
                         else
-                            result = dataReader.GetInt32(0);
+                            result = dataReader.GetInt32(_id);
                     }                    
                 }
 
@@ -113,10 +116,9 @@ namespace AdoNetDemo
                 else
                     return (result + 1);
             }
-
-            catch (Exception ex)
+            catch (SystemException ex)
             {
-                throw new Exception(ex.Message);
+                throw new SystemException(ex.Message);
             }
         }
     }
