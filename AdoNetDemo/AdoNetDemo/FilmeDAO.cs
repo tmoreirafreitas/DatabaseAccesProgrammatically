@@ -9,8 +9,19 @@ namespace AdoNetDemo
 {
     public class FilmeDAO : GenericDAO, IGenericDAO<Filme>
     {
+        //id	        int
+        //idgenero	    int
+        //idcategoria	int
+        //titulo	    varchar
+        //duracao	    varchar
+
         private CategoriaDAO categoriaDAO;
         private GeneroDAO generoDAO;
+        private int _id;
+        private int _idgenero;
+        private int _idcategoria;
+        private int _titulo;
+        private int _duracao;
 
         public FilmeDAO()
         {
@@ -52,7 +63,7 @@ namespace AdoNetDemo
                 parametros.Add("@duracao", item.Duracao);
                 return ExecuteCommand(sql, parametros);
             }
-            catch (Exception ex)
+            catch (SystemException ex)
             {
                 throw new SystemException(ex.Message);
             }
@@ -60,32 +71,145 @@ namespace AdoNetDemo
 
         public bool Remove(Filme item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql = @"DELETE FROM [dbo].[Filme] WHERE titulo = @titulo";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@titulo", item.Titulo);
+                ExecuteCommand(sql, parametros);
+
+                return true;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public bool Update(Filme item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql = @"UPDATE [dbo].[Filme] SET [idgenero] = @idgenero ,[idcategoria] = @idcategoria ,[titulo] = @titulo ,[duracao] = @duracao WHERE id = @id";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@id", item.ID);
+                parametros.Add("@idgenero", item.Genero.ID);
+                parametros.Add("@idcategoria", item.Categoria.ID);
+                parametros.Add("@titulo", item.Titulo);
+                parametros.Add("@duracao", item.Duracao);
+                ExecuteCommand(sql, parametros);
+
+                return true;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public Filme GetBy(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE id = @id";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@id", id);
+
+                return Populate(ExecuteQuery(sql, parametros));
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public Filme GetBy(string titulo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE titulo = @titulo";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@titulo", titulo);
+
+                return Populate(ExecuteQuery(sql, parametros));
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Filme> GetFilmes(string titulo)
+        {
+            var filmes = new List<Filme>();
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE titulo LIKE '%' + @titulo + '%'";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@titulo", titulo);
+                var dataReader = ExecuteQuery(sql, parametros);
+
+                while (dataReader.Read())
+                    filmes.Add(Populate(dataReader));
+
+                return filmes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public List<Filme> GetAll()
         {
-            throw new NotImplementedException();
+            var filmes = new List<Filme>();
+            try
+            {
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]";
+                var dataReader = ExecuteQuery(sql);
+
+                while (dataReader.Read())
+                    filmes.Add(Populate(dataReader));
+
+                return filmes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public Filme Populate(System.Data.IDataReader dataReader)
         {
-            throw new NotImplementedException();
+            if (dataReader != null)
+            {
+                _id = dataReader.GetOrdinal("id");
+                _idgenero = dataReader.GetOrdinal("idgenero");
+                _idcategoria = dataReader.GetOrdinal("idcategoria");
+                _titulo = dataReader.GetOrdinal("titulo");
+                _duracao = dataReader.GetOrdinal("duracao");
+
+                var filme = new Filme();
+
+                if (!dataReader.IsDBNull(_id))
+                    filme.ID = dataReader.GetInt32(_id);
+
+                if (!dataReader.IsDBNull(_idgenero))
+                    filme.Genero = generoDAO.GetBy(dataReader.GetInt32(_idgenero));
+
+                if (!dataReader.IsDBNull(_idcategoria))
+                    filme.Categoria = categoriaDAO.GetBy(dataReader.GetInt32(_idcategoria));
+
+                if (!dataReader.IsDBNull(_titulo))
+                    filme.Titulo = dataReader.GetString(_titulo);
+
+                if (!dataReader.IsDBNull(_duracao))
+                    filme.Duracao = dataReader.GetString(_duracao);
+
+                return filme;
+            }
+
+            return null;
         }
     }
 }

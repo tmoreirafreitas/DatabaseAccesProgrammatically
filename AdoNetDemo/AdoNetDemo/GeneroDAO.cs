@@ -103,6 +103,7 @@ namespace AdoNetDemo
                 if (dataReader.IsDBNull(1))
                     item.Descricao = dataReader.GetString(1);
             }
+
             return item;
         }
     }

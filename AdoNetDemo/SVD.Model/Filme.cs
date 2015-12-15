@@ -11,6 +11,6 @@ namespace SVD.Model
         public Genero Genero { get; set; }
         public Categoria Categoria { get; set; }
         public string Titulo { get; set; }
-        public float Duracao { get; set; }
+        public string Duracao { get; set; }
     }
 }
