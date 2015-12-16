@@ -8,7 +8,6 @@ namespace SVD.Model
 {
     public class Atuacao
     {
-        public int ID { get; set; }
         public Ator Ator { get; set; }
         public Filme Filme { get; set; }
         public string Papel { get; set; }
