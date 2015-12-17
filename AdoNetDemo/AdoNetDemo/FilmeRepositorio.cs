@@ -15,9 +15,9 @@ namespace AdoNetDemo
         //titulo	    varchar
         //duracao	    varchar
 
-        private CategoriaRepositorio categoriaRepositorio;
-        private GeneroRepositorio generoRepositorio;
-        private AtuacaoRepositorio atuacaoRepositorio;
+        private CategoriaRepositorio categoriaRepositorio { get { return new CategoriaRepositorio(); } }
+        private GeneroRepositorio generoRepositorio { get { return new GeneroRepositorio(); } }
+        private AtuacaoRepositorio atuacaoRepositorio { get { return new AtuacaoRepositorio(); } }
         private int _id;
         private int _idgenero;
         private int _idcategoria;
@@ -28,9 +28,6 @@ namespace AdoNetDemo
         {
             try
             {
-                categoriaRepositorio = new CategoriaRepositorio();
-                generoRepositorio = new GeneroRepositorio();
-
                 item.ID = GetNextId("Filme");
                 var generos = generoRepositorio.GetAll();
                 var categorias = categoriaRepositorio.GetAll();
@@ -51,9 +48,6 @@ namespace AdoNetDemo
                                       Descricao = categoria.Descricao,
                                       ValorLocacao = categoria.ValorLocacao
                                   })).FirstOrDefault();
-
-                categoriaRepositorio = null;
-                generoRepositorio = null;
 
                 string sql = @"INSERT INTO [dbo].[Filme] ([id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao]) VALUES (@id ,@idgenero ,@idcategoria ,@titulo ,@duracao)";
                 var parametros = new Dictionary<string, object>();
@@ -134,14 +128,19 @@ namespace AdoNetDemo
             {
                 throw new SystemException(ex.Message);
             }
-        }        
+        }
 
         public List<Filme> GetAllBy(Categoria categoria)
         {
-            if (categoria == null) { throw new ArgumentNullException(); }
-            categoriaRepositorio = new CategoriaRepositorio();
+            if (categoria != null)
+            {
+                if (categoria.ID == null)
+                    if (!string.IsNullOrEmpty(categoria.Descricao))
+                        categoria = categoriaRepositorio.GetBy(categoria.Descricao);
+            }
+            else { throw new ArgumentNullException(); }
+
             var filmes = new List<Filme>();
-            categoriaRepositorio = null;
 
             try
             {
@@ -163,11 +162,15 @@ namespace AdoNetDemo
 
         public List<Filme> GetAllBy(Genero genero)
         {
-            if (genero == null) { throw new ArgumentNullException(); }
-            generoRepositorio = new GeneroRepositorio();
-            var filmes = new List<Filme>();
-            generoRepositorio = null;
+            if (genero != null)
+            {
+                if (genero.ID == null)
+                    if (!string.IsNullOrEmpty(genero.Descricao))
+                        genero = generoRepositorio.GetBy(genero.Descricao);
+            }
+            else { throw new ArgumentNullException(); }
 
+            var filmes = new List<Filme>();
             try
             {
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero";
@@ -209,8 +212,6 @@ namespace AdoNetDemo
 
         public List<Filme> GetAllBy(Genero genero, Categoria categoria)
         {
-            generoRepositorio = new GeneroRepositorio();
-            categoriaRepositorio = new CategoriaRepositorio();
             var filmes = new List<Filme>();
 
             try
@@ -222,9 +223,6 @@ namespace AdoNetDemo
                 if (categoria != null)
                     if (!string.IsNullOrEmpty(categoria.Descricao))
                         categoria = categoriaRepositorio.GetBy(categoria.Descricao);
-
-                categoriaRepositorio = null;
-                generoRepositorio = null;
 
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
@@ -250,7 +248,6 @@ namespace AdoNetDemo
                 if (ator.ID == null)
                     ator = new AtorRepositorio().GetBy(ator.Nome);
 
-                atuacaoRepositorio = new AtuacaoRepositorio();
                 var allAtuacoes = atuacaoRepositorio.GetAll();
                 var filmes = (from atuacao in allAtuacoes
                               where atuacao.Ator.ID == ator.ID
@@ -302,10 +299,6 @@ namespace AdoNetDemo
                 _titulo = dataReader.GetOrdinal("titulo");
                 _duracao = dataReader.GetOrdinal("duracao");
 
-                categoriaRepositorio = new CategoriaRepositorio();
-                generoRepositorio = new GeneroRepositorio();
-                atuacaoRepositorio = new AtuacaoRepositorio();
-
                 var filme = new Filme();
 
                 if (!dataReader.IsDBNull(_id))
@@ -334,10 +327,6 @@ namespace AdoNetDemo
                               })).ToList();
 
                 filme.AtuacoesAtores = atores;
-
-                categoriaRepositorio = null;
-                generoRepositorio = null;
-                atuacaoRepositorio = null;
 
                 return filme;
             }
