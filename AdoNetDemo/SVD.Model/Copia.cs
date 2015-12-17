@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class Copia
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public Filme Filme { get; set; }
         public DateTime DataCopia { get; set; }
         public bool SituacaoCopia { get; set; }

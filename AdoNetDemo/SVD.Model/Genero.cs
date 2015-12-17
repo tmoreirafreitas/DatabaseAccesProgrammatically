@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class Genero
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Descricao { get; set; }
     }
 }

@@ -8,10 +8,10 @@ namespace SVD.Model
 {
     public class Locacao
     {
-        public long ID { get; set; }
+        public long? ID { get; set; }
         public Socio Socio { get; set; }
-        public DateTime DataLocacao { get; set; }
-        public DateTime DataDevolucao { get; set; }
-        public bool Status { get; set; }
+        public DateTime? DataLocacao { get; set; }
+        public DateTime? DataDevolucao { get; set; }
+        public bool? Status { get; set; }
     }
 }

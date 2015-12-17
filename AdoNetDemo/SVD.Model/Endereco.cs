@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class Endereco
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Rua { get; set; }
         public int Numero { get; set; }
         public string Complemento { get; set; }

@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class Ator
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Nome { get; set; }
         public List<Filme> Atuacoes { get; set; }
     }
