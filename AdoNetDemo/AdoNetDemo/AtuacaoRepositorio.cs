@@ -7,14 +7,14 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class AtuacaoDAO : RepositorioBase, IGenericDAO<Atuacao>
+    public class AtuacaoRepositorio : RepositorioBase, IRepositorio<Atuacao>
     {
         //[idator]      int
         //[idfilme]     int
         //[papel]       varchar
 
-        private FilmeDAO filmeDAO;
-        private AtorDAO atorDAO;
+        private FilmeRepositorio filmeRepositorio;
+        private AtorRepositorio atorRepositorio;
         private int _idAtor;
         private int _idFilme;
         private int _papel;
@@ -23,7 +23,6 @@ namespace AdoNetDemo
         {
             try
             {
-                item.ID = GetNextId("Atua");
                 string sql = @"INSERT INTO [dbo].[Atua] ([idator] ,[idfilme] ,[papel]) VALUES (@idator ,@idfilme ,@papel)";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idator", item.Ator.ID);
@@ -38,7 +37,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Remove(Atuacao item)
+        public void Remove(Atuacao item)
         {
             try
             {
@@ -47,8 +46,6 @@ namespace AdoNetDemo
                 parametros.Add("@idator", item.Ator.ID);
                 parametros.Add("@idfilme", item.Filme.ID);
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {
@@ -56,7 +53,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Update(Atuacao item)
+        public void Update(Atuacao item)
         {
             try
             {
@@ -66,8 +63,6 @@ namespace AdoNetDemo
                 parametros.Add("@idator", item.Ator.ID);
                 parametros.Add("@idfilme", item.Filme.ID);
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {
@@ -124,18 +119,18 @@ namespace AdoNetDemo
                 _idFilme = dataReader.GetOrdinal("idfilme");
                 _papel = dataReader.GetOrdinal("papel");
 
-                filmeDAO = new FilmeDAO();
-                atorDAO = new AtorDAO();
+                filmeRepositorio = new FilmeRepositorio();
+                atorRepositorio = new AtorRepositorio();
 
                 Atuacao atuacao = new Atuacao
                 {
-                    Filme = filmeDAO.GetBy(dataReader.GetInt32(_idFilme)),
-                    Ator = atorDAO.GetBy(dataReader.GetInt32(_idAtor)),
+                    Filme = filmeRepositorio.GetBy(dataReader.GetInt32(_idFilme)),
+                    Ator = atorRepositorio.GetBy(dataReader.GetInt32(_idAtor)),
                     Papel = dataReader.GetString(_papel)
                 };
 
-                filmeDAO = null;
-                atorDAO = null;
+                filmeRepositorio = null;
+                atorRepositorio = null;
 
                 return atuacao;
             }

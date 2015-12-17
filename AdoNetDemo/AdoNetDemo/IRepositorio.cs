@@ -7,11 +7,11 @@ using System.Data;
 
 namespace AdoNetDemo
 {
-    interface IGenericDAO<T>
+    interface IRepositorio<T> where T : class
     {
         int Insert(T item);
-        bool Remove(T item);
-        bool Update(T item);
+        void Remove(T item);
+        void Update(T item);
         T GetBy(int id);
         List<T> GetAll();
         T Populate(IDataReader dataReader);

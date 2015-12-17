@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class CategoriaDAO : RepositorioBase, IGenericDAO<Categoria>
+    public class CategoriaRepositorio : RepositorioBase, IRepositorio<Categoria>
     {
         public int Insert(Categoria item)
         {
@@ -30,7 +30,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Remove(Categoria item)
+        public void Remove(Categoria item)
         {
             try
             {
@@ -44,8 +44,6 @@ namespace AdoNetDemo
                     parametros.Add("@descricao", item.Descricao);
 
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {
@@ -53,7 +51,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Update(Categoria item)
+        public void Update(Categoria item)
         {
             try
             {
@@ -63,8 +61,6 @@ namespace AdoNetDemo
                 parametros.Add("@descricao", item.Descricao);
                 parametros.Add("@valor_locacao", item.ValorLocacao);
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {

@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class FilmeDAO : RepositorioBase, IGenericDAO<Filme>
+    public class FilmeRepositorio : RepositorioBase, IRepositorio<Filme>
     {
         //id	        int
         //idgenero	    int
@@ -15,27 +15,24 @@ namespace AdoNetDemo
         //titulo	    varchar
         //duracao	    varchar
 
-        private CategoriaDAO categoriaDAO;
-        private GeneroDAO generoDAO;
+        private CategoriaRepositorio categoriaRepositorio;
+        private GeneroRepositorio generoRepositorio;
         private int _id;
         private int _idgenero;
         private int _idcategoria;
         private int _titulo;
         private int _duracao;
 
-        public FilmeDAO()
-        {
-            categoriaDAO = new CategoriaDAO();
-            generoDAO = new GeneroDAO();
-        }
-
         public int Insert(Filme item)
         {
             try
             {
+                categoriaRepositorio = new CategoriaRepositorio();
+                generoRepositorio = new GeneroRepositorio();
+
                 item.ID = GetNextId("Filme");
-                var generos = generoDAO.GetAll();
-                var categorias = categoriaDAO.GetAll();
+                var generos = generoRepositorio.GetAll();
+                var categorias = categoriaRepositorio.GetAll();
 
                 item.Genero = (from genero in generos
                                where genero.Descricao.ToLowerInvariant() == item.Genero.Descricao.ToLowerInvariant()
@@ -54,6 +51,9 @@ namespace AdoNetDemo
                                       ValorLocacao = categoria.ValorLocacao
                                   })).FirstOrDefault();
 
+                categoriaRepositorio = null;
+                generoRepositorio = null;
+
                 string sql = @"INSERT INTO [dbo].[Filme] ([id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao]) VALUES (@id ,@idgenero ,@idcategoria ,@titulo ,@duracao)";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
@@ -69,7 +69,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Remove(Filme item)
+        public void Remove(Filme item)
         {
             try
             {
@@ -77,8 +77,6 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", item.Titulo);
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {
@@ -86,7 +84,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Update(Filme item)
+        public void Update(Filme item)
         {
             try
             {
@@ -98,8 +96,6 @@ namespace AdoNetDemo
                 parametros.Add("@titulo", item.Titulo);
                 parametros.Add("@duracao", item.Duracao);
                 ExecuteCommand(sql, parametros);
-
-                return true;
             }
             catch (SystemException ex)
             {
@@ -162,8 +158,10 @@ namespace AdoNetDemo
 
         public List<Filme> GetByCategoria(string descricao)
         {
-            var categoria = categoriaDAO.GetBy(descricao);
+            categoriaRepositorio = new CategoriaRepositorio();
+            var categoria = categoriaRepositorio.GetBy(descricao);
             var filmes = new List<Filme>();
+            categoriaRepositorio = null;
 
             try
             {
@@ -185,8 +183,10 @@ namespace AdoNetDemo
 
         public List<Filme> GetByGenero(string descricao)
         {
-            var genero = generoDAO.GetBy(descricao);
+            generoRepositorio = new GeneroRepositorio();
+            var genero = generoRepositorio.GetBy(descricao);
             var filmes = new List<Filme>();
+            generoRepositorio = null;
 
             try
             {
@@ -208,17 +208,22 @@ namespace AdoNetDemo
 
         public List<Filme> GetByGeneroAndCategoria(Genero genero, Categoria categoria)
         {
+            generoRepositorio = new GeneroRepositorio();
+            categoriaRepositorio = new CategoriaRepositorio();
             var filmes = new List<Filme>();
 
             try
             {
                 if (genero != null)
                     if (!string.IsNullOrEmpty(genero.Descricao))
-                        genero = generoDAO.GetBy(genero.Descricao);
+                        genero = generoRepositorio.GetBy(genero.Descricao);
 
                 if (categoria != null)
                     if (!string.IsNullOrEmpty(categoria.Descricao))
-                        categoria = categoriaDAO.GetBy(categoria.Descricao);
+                        categoria = categoriaRepositorio.GetBy(categoria.Descricao);
+
+                categoriaRepositorio = null;
+                generoRepositorio = null;
 
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
@@ -266,22 +271,28 @@ namespace AdoNetDemo
                 _titulo = dataReader.GetOrdinal("titulo");
                 _duracao = dataReader.GetOrdinal("duracao");
 
+                categoriaRepositorio = new CategoriaRepositorio();
+                generoRepositorio = new GeneroRepositorio();
+
                 var filme = new Filme();
 
                 if (!dataReader.IsDBNull(_id))
                     filme.ID = dataReader.GetInt32(_id);
 
                 if (!dataReader.IsDBNull(_idgenero))
-                    filme.Genero = generoDAO.GetBy(dataReader.GetInt32(_idgenero));
+                    filme.Genero = generoRepositorio.GetBy(dataReader.GetInt32(_idgenero));
 
                 if (!dataReader.IsDBNull(_idcategoria))
-                    filme.Categoria = categoriaDAO.GetBy(dataReader.GetInt32(_idcategoria));
+                    filme.Categoria = categoriaRepositorio.GetBy(dataReader.GetInt32(_idcategoria));
 
                 if (!dataReader.IsDBNull(_titulo))
                     filme.Titulo = dataReader.GetString(_titulo);
 
                 if (!dataReader.IsDBNull(_duracao))
                     filme.Duracao = dataReader.GetString(_duracao);
+
+                categoriaRepositorio = null;
+                generoRepositorio = null;
 
                 return filme;
             }

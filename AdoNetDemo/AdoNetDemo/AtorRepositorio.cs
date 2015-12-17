@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class AtorDAO : RepositorioBase, IGenericDAO<Ator>
+    public class AtorRepositorio : RepositorioBase, IRepositorio<Ator>
     {
         public int Insert(Ator item)
         {
@@ -29,7 +29,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Remove(Ator item)
+        public void Remove(Ator item)
         {
             string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
 
@@ -38,7 +38,6 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 ExecuteCommand(sql, parametros);
-                return true;
             }
 
             catch (SystemException ex)
@@ -47,7 +46,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Update(Ator item)
+        public void Update(Ator item)
         {
             string sql = @"UPDATE [dbo].[Ator] SET [nome] = @nome WHERE id = @id";
 
@@ -57,7 +56,6 @@ namespace AdoNetDemo
                 parametros.Add("@id", item.ID);
                 parametros.Add("@nome", item.Nome);
                 ExecuteCommand(sql, parametros);
-                return true;
             }
 
             catch (SystemException ex)

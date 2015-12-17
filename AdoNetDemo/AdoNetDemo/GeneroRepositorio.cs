@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class GeneroDAO : RepositorioBase, IGenericDAO<Genero>
+    public class GeneroRepositorio : RepositorioBase, IRepositorio<Genero>
     {
         public int Insert(Genero item)
         {
@@ -25,7 +25,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Remove(Genero item)
+        public void Remove(Genero item)
         {
             try
             {
@@ -33,7 +33,6 @@ namespace AdoNetDemo
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@ID", item.ID);
                 ExecuteCommand(sql, parametro);
-                return true;
             }
             catch (SystemException ex)
             {
@@ -41,7 +40,7 @@ namespace AdoNetDemo
             }
         }
 
-        public bool Update(Genero item)
+        public void Update(Genero item)
         {
             try
             {
@@ -50,7 +49,6 @@ namespace AdoNetDemo
                 parametro.Add("@descricao", item.Descricao);
                 parametro.Add("@ID", item.ID);
                 ExecuteCommand(sql, parametro);
-                return true;
             }
             catch (SystemException ex)
             {

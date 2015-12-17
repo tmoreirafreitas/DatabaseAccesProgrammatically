@@ -39,14 +39,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AtorDAO.cs" />
-    <Compile Include="AtuacaoDAO.cs" />
-    <Compile Include="CategoriaDAO.cs" />
+    <Compile Include="AtorRepositorio.cs" />
+    <Compile Include="AtuacaoRepositorio.cs" />
+    <Compile Include="CategoriaRepositorio.cs" />
     <Compile Include="ConnectionFactory.cs" />
-    <Compile Include="FilmeDAO.cs" />
+    <Compile Include="FilmeRepositorio.cs" />
     <Compile Include="RepositorioBase.cs" />
-    <Compile Include="GeneroDAO.cs" />
-    <Compile Include="IGenericDAO.cs" />
+    <Compile Include="GeneroRepositorio.cs" />
+    <Compile Include="IRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
