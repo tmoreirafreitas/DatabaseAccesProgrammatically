@@ -43,6 +43,7 @@
     <Compile Include="AtuacaoRepositorio.cs" />
     <Compile Include="CategoriaRepositorio.cs" />
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="CopiaRepositorio.cs" />
     <Compile Include="FilmeRepositorio.cs" />
     <Compile Include="RepositorioBase.cs" />
     <Compile Include="GeneroRepositorio.cs" />
