@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class FilmeDAO : GenericDAO, IGenericDAO<Filme>
+    public class FilmeDAO : RepositorioBase, IGenericDAO<Filme>
     {
         //id	        int
         //idgenero	    int

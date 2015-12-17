@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class CategoriaDAO : GenericDAO, IGenericDAO<Categoria>
+    public class CategoriaDAO : RepositorioBase, IGenericDAO<Categoria>
     {
         public int Insert(Categoria item)
         {

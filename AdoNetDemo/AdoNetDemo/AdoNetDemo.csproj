@@ -44,7 +44,7 @@
     <Compile Include="CategoriaDAO.cs" />
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="FilmeDAO.cs" />
-    <Compile Include="GenericDAO.cs" />
+    <Compile Include="RepositorioBase.cs" />
     <Compile Include="GeneroDAO.cs" />
     <Compile Include="IGenericDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

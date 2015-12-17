@@ -11,7 +11,7 @@ namespace AdoNetDemo
     /// <summary>
     /// Classe responsável pelos comandos genéricos de querys a uma base de dados
     /// </summary>
-    public abstract class GenericDAO
+    public abstract class RepositorioBase
     {
         /// <summary>
         /// Este método executa querys do tipo SELECT no banco de dados.
