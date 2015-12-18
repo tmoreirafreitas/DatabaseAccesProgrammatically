@@ -11,7 +11,7 @@ namespace AdoNetDemo
     /// <summary>
     /// Classe responsável pelos comandos genéricos de querys a uma base de dados
     /// </summary>
-    public abstract class RepositorioBase
+    public abstract class RepositorioBase<T> where T : class
     {
         /// <summary>
         /// Este método executa querys do tipo SELECT no banco de dados.
@@ -121,5 +121,7 @@ namespace AdoNetDemo
                 throw new SystemException(ex.Message);
             }
         }
+
+        protected abstract T Populate(IDataReader dataReader);
     }
 }
