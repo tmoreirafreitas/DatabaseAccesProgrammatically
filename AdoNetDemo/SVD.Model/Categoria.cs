@@ -8,10 +8,10 @@ namespace SVD.Model
 {
     public class Categoria
     {
-        public int? ID { get; set; }
-        public string Descricao { get; set; }
-        public decimal ValorLocacao { get; set; }
-        public List<Filme> Filmes { get; private set; }
+        public int?        ID           { get; set; }
+        public string      Descricao    { get; set; }
+        public decimal     ValorLocacao { get; set; }
+        public List<Filme> Filmes       { get { return new List<Filme>(); } private set; }
 
         public bool AddFilme(Filme filme)
         {
