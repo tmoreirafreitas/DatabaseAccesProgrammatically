@@ -13,8 +13,8 @@ namespace AdoNetDemo
         //[idfilme]     int
         //[papel]       varchar
 
-        private FilmeRepositorio filmeRepositorio;
-        private AtorRepositorio atorRepositorio;
+        private FilmeRepositorio filmeRepositorio { get { return new FilmeRepositorio(); } }
+        private AtorRepositorio atorRepositorio { get { return new AtorRepositorio(); } }
         private int _idAtor;
         private int _idFilme;
         private int _papel;
@@ -119,18 +119,12 @@ namespace AdoNetDemo
                 _idFilme = dataReader.GetOrdinal("idfilme");
                 _papel = dataReader.GetOrdinal("papel");
 
-                filmeRepositorio = new FilmeRepositorio();
-                atorRepositorio = new AtorRepositorio();
-
                 Atuacao atuacao = new Atuacao
                 {
                     Filme = filmeRepositorio.GetBy(dataReader.GetInt32(_idFilme)),
                     Ator = atorRepositorio.GetBy(dataReader.GetInt32(_idAtor)),
                     Papel = dataReader.GetString(_papel)
                 };
-
-                filmeRepositorio = null;
-                atorRepositorio = null;
 
                 return atuacao;
             }
