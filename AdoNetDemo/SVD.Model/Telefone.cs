@@ -9,8 +9,8 @@ namespace SVD.Model
     public class Telefone
     {
         public long?  ID     { get; set; }
-        public char[] DDD    { get; set; }
-        public char[] Numero { get; set; }
+        public string DDD    { get; set; }
+        public string Numero { get; set; }
         public Socio  Socio  { get; set; }
     }
 }
