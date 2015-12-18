@@ -84,7 +84,7 @@ namespace AdoNetDemo
                 parametros.Add("@idator", idator);
                 parametros.Add("@idfilme", idfilme);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -98,7 +98,7 @@ namespace AdoNetDemo
             {
                 var atuacoes = new List<Atuacao>();
                 string sql = @"SELECT [idator] ,[idfilme] ,[papel] FROM [dbo].[Atua]";
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
 
                 while (dataReader.Read())
                     atuacoes.Add(Populate(dataReader));

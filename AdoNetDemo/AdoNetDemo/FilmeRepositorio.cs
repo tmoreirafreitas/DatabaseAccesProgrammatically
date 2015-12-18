@@ -106,7 +106,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -122,7 +122,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", titulo);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -147,7 +147,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idcategoria", categoria.ID);
-                var dataReader = ExecuteQuery(sql, parametros);
+                var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
                     filmes.Add(Populate(dataReader));
@@ -176,7 +176,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idgenero", genero.ID);
-                var dataReader = ExecuteQuery(sql, parametros);
+                var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
                     filmes.Add(Populate(dataReader));
@@ -197,7 +197,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE titulo LIKE '%' + @titulo + '%'";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", titulo);
-                var dataReader = ExecuteQuery(sql, parametros);
+                var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
                     filmes.Add(Populate(dataReader));
@@ -228,7 +228,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idgenero", genero.ID);
                 parametros.Add("@idcategoria", categoria.ID);
-                var dataReader = ExecuteQuery(sql, parametros);
+                var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
                     filmes.Add(Populate(dataReader));
@@ -276,7 +276,7 @@ namespace AdoNetDemo
             try
             {
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]";
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
 
                 while (dataReader.Read())
                     filmes.Add(Populate(dataReader));

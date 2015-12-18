@@ -23,7 +23,7 @@ namespace AdoNetDemo
         /// <param name="query">query</param>
         /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns>dataReader</returns>
-        protected IDataReader ExecuteQuery(string query, Dictionary<string, object> ColumnsAndValues = null)
+        protected IDataReader ExecuteReader(string query, Dictionary<string, object> ColumnsAndValues = null)
         {
             IDataReader dataReader = null;
 
@@ -98,7 +98,7 @@ namespace AdoNetDemo
 
             try
             {
-                using (IDataReader dataReader = ExecuteQuery("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
+                using (IDataReader dataReader = ExecuteReader("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
                 {
                     _id = dataReader.GetOrdinal("id");
 

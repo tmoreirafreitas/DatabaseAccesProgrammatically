@@ -72,7 +72,7 @@ namespace AdoNetDemo
             {
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
 
             catch (SystemException ex)
@@ -89,7 +89,7 @@ namespace AdoNetDemo
             {
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@nome", nome);
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
 
             catch (SystemException ex)
@@ -105,7 +105,7 @@ namespace AdoNetDemo
 
             try
             {
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 

@@ -63,7 +63,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE ID = @ID";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@ID", id);
-                return Populate(ExecuteQuery(sql, parametro));
+                return Populate(ExecuteReader(sql, parametro));
             }
             catch (SystemException ex)
             {
@@ -78,7 +78,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE descricao = @descricao";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@descricao", descricao);
-                return Populate(ExecuteQuery(sql, parametro));
+                return Populate(ExecuteReader(sql, parametro));
             }
             catch (SystemException ex)
             {
@@ -92,7 +92,7 @@ namespace AdoNetDemo
             {
                 var items = new List<Genero>();
                 string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero]";
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 

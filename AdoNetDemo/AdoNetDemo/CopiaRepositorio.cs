@@ -94,7 +94,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -108,7 +108,7 @@ namespace AdoNetDemo
             {
                 var copias = new List<Copia>();
                 var sql = @"SELECT [id] ,[idfilme] ,[datacopia] ,[situacao_copia] FROM [SVDB].[dbo].[Copia]";
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     copias.Add(Populate(dataReader));
 

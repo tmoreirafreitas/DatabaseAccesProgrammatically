@@ -77,7 +77,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@ID", id);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -93,7 +93,7 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@descricao", descricao);
 
-                return Populate(ExecuteQuery(sql, parametros));
+                return Populate(ExecuteReader(sql, parametros));
             }
             catch (SystemException ex)
             {
@@ -107,7 +107,7 @@ namespace AdoNetDemo
             {
                 string sql = @"SELECT [id],[descricao],[valor_locacao] FROM [dbo].[Categoria]";
                 var items = new List<Categoria>();
-                var dataReader = ExecuteQuery(sql);
+                var dataReader = ExecuteReader(sql);
 
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
