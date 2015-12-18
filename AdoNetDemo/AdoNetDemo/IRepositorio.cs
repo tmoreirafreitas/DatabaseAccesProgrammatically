@@ -14,6 +14,5 @@ namespace AdoNetDemo
         void Update(T item);
         T GetBy(int id);
         List<T> GetAll();
-        T Populate(IDataReader dataReader);
     }
 }

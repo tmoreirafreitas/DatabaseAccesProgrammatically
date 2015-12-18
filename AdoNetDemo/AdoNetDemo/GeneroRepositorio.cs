@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class GeneroRepositorio : RepositorioBase, IRepositorio<Genero>
+    public class GeneroRepositorio : RepositorioBase<Genero>, IRepositorio<Genero>
     {
         public int Insert(Genero item)
         {
@@ -104,7 +104,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Genero Populate(System.Data.IDataReader dataReader)
+        protected override Genero Populate(System.Data.IDataReader dataReader)
         {
             var item = new Genero();
 

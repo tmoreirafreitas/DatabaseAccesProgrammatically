@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class AtorRepositorio : RepositorioBase, IRepositorio<Ator>
+    public class AtorRepositorio : RepositorioBase<Ator>, IRepositorio<Ator>
     {
         public int Insert(Ator item)
         {
@@ -118,7 +118,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Ator Populate(System.Data.IDataReader dataReader)
+        protected override Ator Populate(System.Data.IDataReader dataReader)
         {
             var item = new Ator();
 

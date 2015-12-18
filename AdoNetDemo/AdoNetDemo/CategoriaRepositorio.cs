@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class CategoriaRepositorio : RepositorioBase, IRepositorio<Categoria>
+    public class CategoriaRepositorio : RepositorioBase<Categoria>, IRepositorio<Categoria>
     {
         public int Insert(Categoria item)
         {
@@ -120,7 +120,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Categoria Populate(System.Data.IDataReader dataReader)
+        protected override Categoria Populate(System.Data.IDataReader dataReader)
         {
             Categoria item = new Categoria();
             if (dataReader.Read())

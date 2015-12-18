@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class FilmeRepositorio : RepositorioBase, IRepositorio<Filme>
+    public class FilmeRepositorio : RepositorioBase<Filme>, IRepositorio<Filme>
     {
         //id	        int
         //idgenero	    int
@@ -289,7 +289,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Filme Populate(System.Data.IDataReader dataReader)
+        protected override Filme Populate(System.Data.IDataReader dataReader)
         {
             if (dataReader != null)
             {

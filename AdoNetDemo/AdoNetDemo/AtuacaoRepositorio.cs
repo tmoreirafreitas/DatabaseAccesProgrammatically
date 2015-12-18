@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class AtuacaoRepositorio : RepositorioBase, IRepositorio<Atuacao>
+    public class AtuacaoRepositorio : RepositorioBase<Atuacao>, IRepositorio<Atuacao>
     {
         //[idator]      int
         //[idfilme]     int
@@ -111,7 +111,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Atuacao Populate(System.Data.IDataReader dataReader)
+        protected override Atuacao Populate(System.Data.IDataReader dataReader)
         {
             if (dataReader != null)
             {

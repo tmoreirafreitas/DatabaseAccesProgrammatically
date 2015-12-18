@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class CopiaRepositorio : RepositorioBase, IRepositorio<Copia>
+    public class CopiaRepositorio : RepositorioBase<Copia>, IRepositorio<Copia>
     {
 
         //id	            int
@@ -120,7 +120,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Copia Populate(System.Data.IDataReader dataReader)
+        protected override Copia Populate(System.Data.IDataReader dataReader)
         {
             if (dataReader != null)
             {
