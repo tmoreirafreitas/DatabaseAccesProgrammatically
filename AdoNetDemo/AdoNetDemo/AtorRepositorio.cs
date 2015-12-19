@@ -11,7 +11,7 @@ namespace AdoNetDemo
     {
         public int Insert(Ator item)
         {
-            string sql = @"INSERT INTO [dbo].[Ator]([Id],[nome]) VALUES (@id, @nome)";
+            string sql = @"INSERT INTO [dbo].[Ator]([Id],[nome]) VALUES (@id, @nome) SELECT SCOPE_IDENTITY()";
 
             try
             {

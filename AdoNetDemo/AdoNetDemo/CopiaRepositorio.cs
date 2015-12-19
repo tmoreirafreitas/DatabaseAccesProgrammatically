@@ -15,9 +15,9 @@ namespace AdoNetDemo
         //datacopia	        date
         //situacao_copia	bit
 
-        private int _id;	        
-        private int _idfilme;	    
-        private int _datacopia;	    
+        private int _id;
+        private int _idfilme;
+        private int _datacopia;
         private int _situacao_copia;
         private FilmeRepositorio filmeRepositorio { get { return new FilmeRepositorio(); } }
 
@@ -31,7 +31,8 @@ namespace AdoNetDemo
                             item.Filme = filmeRepositorio.GetBy(item.Filme.Titulo);
 
                 item.ID = GetNextId("Copia");
-                var sql = @"INSERT INTO [dbo].[Copia] ([id] ,[idfilme] ,[datacopia] ,[situacao_copia]) VALUES (@id ,@idfilme ,@datacopia ,@situacao_copia)";
+                var sql = @"INSERT INTO [dbo].[Copia] ([id] ,[idfilme] ,[datacopia] ,[situacao_copia]) " +
+@"VALUES (@id ,@idfilme ,@datacopia ,@situacao_copia) SELECT SCOPE_IDENTITY()";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@idfilme", item.Filme.ID);

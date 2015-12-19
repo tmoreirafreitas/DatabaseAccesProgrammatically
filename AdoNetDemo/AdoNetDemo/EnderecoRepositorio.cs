@@ -52,7 +52,7 @@ namespace AdoNetDemo
            ,@cep
            ,@bairro
            ,@cidade
-           ,@estado)";
+           ,@estado) SELECT SCOPE_IDENTITY()";
 
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);

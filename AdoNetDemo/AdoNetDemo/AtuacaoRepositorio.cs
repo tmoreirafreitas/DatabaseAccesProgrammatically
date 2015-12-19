@@ -23,7 +23,7 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Atua] ([idator] ,[idfilme] ,[papel]) VALUES (@idator ,@idfilme ,@papel)";
+                string sql = @"INSERT INTO [dbo].[Atua] ([idator] ,[idfilme] ,[papel]) VALUES (@idator ,@idfilme ,@papel) SELECT SCOPE_IDENTITY()";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idator", item.Ator.ID);
                 parametros.Add("@idfilme", item.Filme.ID);

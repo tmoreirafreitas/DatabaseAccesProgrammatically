@@ -49,7 +49,8 @@ namespace AdoNetDemo
                                       ValorLocacao = categoria.ValorLocacao
                                   })).FirstOrDefault();
 
-                string sql = @"INSERT INTO [dbo].[Filme] ([id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao]) VALUES (@id ,@idgenero ,@idcategoria ,@titulo ,@duracao)";
+                string sql = @"INSERT INTO [dbo].[Filme] ([id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao]) " +
+@"VALUES (@id ,@idgenero ,@idcategoria ,@titulo ,@duracao) SELECT SCOPE_IDENTITY()";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@idgenero", item.Genero.ID);
@@ -83,7 +84,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Filme] SET [idgenero] = @idgenero ,[idcategoria] = @idcategoria ,[titulo] = @titulo ,[duracao] = @duracao WHERE id = @id";
+                string sql = @"UPDATE [dbo].[Filme] SET [idgenero] = @idgenero ,[idcategoria] = @idcategoria ,[titulo] = @titulo ," +
+@"[duracao] = @duracao WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@idgenero", item.Genero.ID);
@@ -144,7 +146,8 @@ namespace AdoNetDemo
 
             try
             {
-                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idcategoria = @idcategoria";
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]" +
+@" WHERE idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idcategoria", categoria.ID);
                 var dataReader = ExecuteReader(sql, parametros);
@@ -173,7 +176,8 @@ namespace AdoNetDemo
             var filmes = new List<Filme>();
             try
             {
-                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero";
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]" +
+@" WHERE idgenero = @idgenero";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idgenero", genero.ID);
                 var dataReader = ExecuteReader(sql, parametros);
@@ -194,7 +198,8 @@ namespace AdoNetDemo
             var filmes = new List<Filme>();
             try
             {
-                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE titulo LIKE '%' + @titulo + '%'";
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]" +
+@" WHERE titulo LIKE '%' + @titulo + '%'";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", titulo);
                 var dataReader = ExecuteReader(sql, parametros);
@@ -224,7 +229,8 @@ namespace AdoNetDemo
                     if (!string.IsNullOrEmpty(categoria.Descricao))
                         categoria = categoriaRepositorio.GetBy(categoria.Descricao);
 
-                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
+                string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme]" +
+@" WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idgenero", genero.ID);
                 parametros.Add("@idcategoria", categoria.ID);
