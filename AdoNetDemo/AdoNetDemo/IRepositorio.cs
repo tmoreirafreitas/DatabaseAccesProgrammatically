@@ -7,7 +7,7 @@ using System.Data;
 
 namespace AdoNetDemo
 {
-    interface IRepositorio<T> where T : class
+    public interface IRepositorio<T> where T : class
     {
         int Insert(T item);
         void Remove(T item);
