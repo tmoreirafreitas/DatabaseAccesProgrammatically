@@ -16,8 +16,9 @@ namespace AdoNetDemo
         //duracao	    varchar
 
         private CategoriaRepositorio categoriaRepositorio { get { return new CategoriaRepositorio(); } }
-        private GeneroRepositorio generoRepositorio { get { return new GeneroRepositorio(); } }
-        private AtuacaoRepositorio atuacaoRepositorio { get { return new AtuacaoRepositorio(); } }
+        private GeneroRepositorio    generoRepositorio    { get { return new GeneroRepositorio();    } }
+        private AtuacaoRepositorio   atuacaoRepositorio   { get { return new AtuacaoRepositorio();   } }
+        private CopiaRepositorio     copiaRepositorio     { get { return new CopiaRepositorio();     } }
         private int _id;
         private int _idgenero;
         private int _idcategoria;
@@ -69,6 +70,7 @@ namespace AdoNetDemo
         {
             try
             {
+                copiaRepositorio.RemoveAllBy(item);
                 string sql = @"DELETE FROM [dbo].[Filme] WHERE titulo = @titulo";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", item.Titulo);
@@ -100,15 +102,17 @@ namespace AdoNetDemo
             }
         }
 
-        public Filme GetBy(int id)
+        public Filme GetBy(long id)
         {
             try
             {
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
+                var filme = Populate(ExecuteReader(sql, parametros));
+                filme.Copias = copiaRepositorio.GetAllBy(filme);
 
-                return Populate(ExecuteReader(sql, parametros));
+                return filme;
             }
             catch (SystemException ex)
             {
@@ -123,8 +127,10 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao] FROM [SVDB].[dbo].[Filme] WHERE titulo = @titulo";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", titulo);
+                var filme = Populate(ExecuteReader(sql, parametros));
+                filme.Copias = copiaRepositorio.GetAllBy(filme);
 
-                return Populate(ExecuteReader(sql, parametros));
+                return filme;
             }
             catch (SystemException ex)
             {
@@ -153,7 +159,11 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
+                {
+                    var filme = Populate(dataReader);
+                    filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
+                }
 
                 return filmes;
             }
@@ -183,7 +193,11 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
+                {
+                    var filme = Populate(dataReader);
+                    filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
+                }
 
                 return filmes;
             }
@@ -205,7 +219,11 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
+                {
+                    var filme = Populate(dataReader);
+                    filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
+                }
 
                 return filmes;
             }
@@ -237,7 +255,11 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
+                {
+                    var filme = Populate(dataReader);
+                    filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
+                }
 
                 return filmes;
             }
@@ -285,7 +307,11 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql);
 
                 while (dataReader.Read())
+                {
+                    var filme = Populate(dataReader);
+                    filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
+                }
 
                 return filmes;
             }
