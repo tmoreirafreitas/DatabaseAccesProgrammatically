@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class Socio
     {
-        public long? ID { get; set; }
+        public int ID { get; set; }
         public string Nome { get; set; }
         public DateTime? Aniversario { get; set; }
         public string RG { get; set; }

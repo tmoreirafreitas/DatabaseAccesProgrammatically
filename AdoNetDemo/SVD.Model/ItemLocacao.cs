@@ -8,7 +8,7 @@ namespace SVD.Model
 {
     public class ItemLocacao
     {
-        public long?   ID           { get; set; }
+        public long    ID           { get; set; }
         public Locacao Locacao      { get; set; }
         public Copia   Copia        { get; set; }
         public decimal ValorLocacao { get; set; }
