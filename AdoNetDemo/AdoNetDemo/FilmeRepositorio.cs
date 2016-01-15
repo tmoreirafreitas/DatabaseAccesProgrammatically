@@ -102,7 +102,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Filme GetBy(long id)
+        public Filme GetBy(int id)
         {
             try
             {

@@ -11,7 +11,7 @@ namespace AdoNetDemo
     {
         public int Insert(Categoria item)
         {
-            string sql = @"INSERT INTO [dbo].[Categoria]([id],[descricao],[valor_locacao]) VALUES (@id, @descricao, @valor_locacao) SELECT SCOPE_IDENTITY()";
+            string sql = @"INSERT INTO [dbo].[Categoria]([id],[descricao],[valor_locacao]) VALUES (@id, @descricao, @valor_locacao)";
 
             try
             {
@@ -20,8 +20,9 @@ namespace AdoNetDemo
                 parametros.Add("@id", item.ID);
                 parametros.Add("@descricao", item.Descricao);
                 parametros.Add("@valor_locacao", item.ValorLocacao);
+                ExecuteCommand(sql, parametros);
 
-                return ExecuteCommand(sql, parametros);
+                return item.ID;
             }
 
             catch (SystemException ex)

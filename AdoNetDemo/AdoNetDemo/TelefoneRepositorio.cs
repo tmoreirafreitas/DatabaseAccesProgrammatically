@@ -47,15 +47,16 @@ namespace AdoNetDemo
            (@id
            ,@idsocio
            ,@ddd
-           ,@numero) SELECT SCOPE_IDENTITY()";
+           ,@numero)";
 
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@idsocio", item.Socio.ID);
                 parametros.Add("@ddd", item.DDD);
                 parametros.Add("@numero", item.Numero);
+                ExecuteCommand(sql, parametros);
 
-                return ExecuteCommand(sql, parametros);
+                return item.ID;
             }
             catch (SystemException ex)
             {
@@ -71,6 +72,21 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@ddd", item.DDD);
                 parametros.Add("@numero", item.Numero);
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public void RemoveAllBy(Socio socio)
+        {
+            try
+            {
+                string sql = @"DELETE FROM [dbo].[Telefone] WHERE idsocio = @idsocio";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idsocio", socio.ID);
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -126,27 +142,28 @@ namespace AdoNetDemo
             {
                 if (socio != null)
                 {
-                    if (socio.ID == null)
-                    {
-                        if (!string.IsNullOrEmpty(socio.CPF.ToString()))
-                            socio = socioRepositorio.GetByCPF(socio.CPF);
-                        else if (!string.IsNullOrEmpty(socio.RG.ToString()))
-                            socio = socioRepositorio.GetByRG(socio.RG);
-                        else if (!string.IsNullOrEmpty(socio.Email))
-                            socio = socioRepositorio.GetBy(socio.Email);
-                    }
+                    if (!string.IsNullOrEmpty(socio.CPF.ToString()))
+                        socio = socioRepositorio.GetByCPF(socio.CPF);
+                    else if (!string.IsNullOrEmpty(socio.RG.ToString()))
+                        socio = socioRepositorio.GetByRG(socio.RG);
+                    else if (!string.IsNullOrEmpty(socio.Email))
+                        socio = socioRepositorio.GetBy(socio.Email);
                 }
 
-                var enderecos = new List<Telefone>();
+                var telefones = new List<Telefone>();
                 string sql = @"SELECT [id] ,[idsocio] ,[ddd] ,[numero] FROM [SVDB].[dbo].[Telefone] WHERE idsocio = @idsocio";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@idsocio", socio.ID);
                 var dataReader = ExecuteReader(sql, parametros);
-
+                socio = socioRepositorio.GetBy(socio.ID);
                 while (dataReader.Read())
-                    enderecos.Add(Populate(dataReader));
+                {
+                    var tel = Populate(dataReader);
+                    tel.Socio = socio;
+                    telefones.Add(tel);
+                }
 
-                return enderecos;
+                return telefones;
             }
             catch (SystemException ex)
             {

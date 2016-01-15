@@ -17,7 +17,9 @@ namespace AdoNetDemo
                 string sql = @"INSERT INTO [dbo].[Genero]([descricao]) VALUES (@descricao) SELECT SCOPE_IDENTITY()";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@descricao", item.Descricao);
-                return ExecuteCommand(sql, parametro);
+                ExecuteCommand(sql, parametro);
+
+                return item.ID;
             }
             catch (SystemException ex)
             {

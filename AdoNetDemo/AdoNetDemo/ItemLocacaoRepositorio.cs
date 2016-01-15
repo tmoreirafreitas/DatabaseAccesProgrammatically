@@ -19,6 +19,16 @@ namespace AdoNetDemo
             throw new NotImplementedException();
         }
 
+        public void RemoveAllBy(Copia copia)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAllBy(Locacao locacao)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(ItemLocacao item)
         {
             throw new NotImplementedException();

@@ -20,6 +20,8 @@ namespace AdoNetDemo
         private int _datacopia;
         private int _situacao_copia;
         private FilmeRepositorio filmeRepositorio { get { return new FilmeRepositorio(); } }
+        private ItemLocacaoRepositorio itemLocacaoRepositorio { get { return new ItemLocacaoRepositorio(); } }
+        private int idFilme = -1;
 
         public int Insert(Copia item)
         {
@@ -32,14 +34,15 @@ namespace AdoNetDemo
 
                 item.ID = GetNextId("Copia");
                 var sql = @"INSERT INTO [dbo].[Copia] ([id] ,[idfilme] ,[datacopia] ,[situacao_copia]) " +
-@"VALUES (@id ,@idfilme ,@datacopia ,@situacao_copia) SELECT SCOPE_IDENTITY()";
+@"VALUES (@id ,@idfilme ,@datacopia ,@situacao_copia)";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@idfilme", item.Filme.ID);
                 parametros.Add("@datacopia", item.DataCopia);
                 parametros.Add("@situacao_copia", item.SituacaoCopia);
+                ExecuteCommand(sql, parametros);
 
-                return ExecuteCommand(sql, parametros);
+                return item.ID;
             }
             catch (SystemException ex)
             {
@@ -51,9 +54,31 @@ namespace AdoNetDemo
         {
             try
             {
+                itemLocacaoRepositorio.RemoveAllBy(item);
                 var sql = @"DELETE FROM [dbo].[Copia] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
+
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public void RemoveAllBy(Filme filme)
+        {
+            try
+            {
+                var copias = GetAllBy(filme);
+
+                foreach (var copia in copias)
+                    itemLocacaoRepositorio.RemoveAllBy(copia);
+
+                var sql = @"DELETE FROM [dbo].[Copia] WHERE idfilmes = @idfilmes";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idfilmes", filme.ID);
 
                 ExecuteCommand(sql, parametros);
             }
@@ -68,9 +93,8 @@ namespace AdoNetDemo
             try
             {
                 if (item.Filme != null)
-                    if (item.Filme.ID == null)
-                        if (!string.IsNullOrEmpty(item.Filme.Titulo))
-                            item.Filme = filmeRepositorio.GetBy(item.Filme.Titulo);
+                    if (!string.IsNullOrEmpty(item.Filme.Titulo))
+                        item.Filme = filmeRepositorio.GetBy(item.Filme.Titulo);
 
                 var sql = @"UPDATE [dbo].[Copia] SET [idfilme] = @idfilme ,[datacopia] = @datacopia ,[situacao_copia] = @situacao_copia WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
@@ -121,6 +145,31 @@ namespace AdoNetDemo
             }
         }
 
+        public List<Copia> GetAllBy(Filme filme)
+        {
+            try
+            {
+                if (filme != null)
+                    if (filme.ID == 0)
+                        if (!string.IsNullOrEmpty(filme.Titulo))
+                            filme = filmeRepositorio.GetBy(filme.Titulo);
+
+                var copias = new List<Copia>();
+                var sql = @"SELECT [id] ,[idfilme] ,[datacopia] ,[situacao_copia] FROM [SVDB].[dbo].[Copia] WHERE idfilmes = @idfilmes";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idfilmes", filme.ID);
+                var dataReader = ExecuteReader(sql, parametros);
+                while (dataReader.Read())
+                    copias.Add(Populate(dataReader));
+
+                return copias;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
         protected override Copia Populate(System.Data.IDataReader dataReader)
         {
             if (dataReader != null)
@@ -131,10 +180,15 @@ namespace AdoNetDemo
                 _situacao_copia = dataReader.GetOrdinal("situacao_copia");
 
                 Copia copia = new Copia();
-                copia.ID = dataReader.GetInt32(_id);
-                copia.Filme = filmeRepositorio.GetBy(dataReader.GetInt32(_idfilme));
+                copia.ID = dataReader.GetInt32(_id);                
                 copia.DataCopia = dataReader.GetDateTime(_datacopia);
                 copia.SituacaoCopia = dataReader.GetBoolean(_situacao_copia);
+
+                if (idFilme == -1)
+                {
+                    idFilme = dataReader.GetInt32(_idfilme);
+                    copia.Filme = filmeRepositorio.GetBy(idFilme);
+                }
 
                 return copia;
             }

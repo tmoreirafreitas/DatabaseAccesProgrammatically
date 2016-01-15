@@ -9,12 +9,61 @@ namespace AdoNetDemo
 {
     public class LocacaoRepositorio : RepositorioBase<Locacao>, IRepositorio<Locacao>
     {
+        private SocioRepositorio socioRepositorio { get { return new SocioRepositorio(); } }
+        private int idSocio = -1;
+
         public int Insert(Locacao item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                item.ID = GetNextId("Locacao");
+                var sql = @"INSERT INTO [dbo].[Locacao]
+           ([idsocio]
+           ,[data_locacao]
+           ,[data_devolucao]
+           ,[status])
+     VALUES
+           (@idsocio
+           ,@data_locacao
+           ,@data_devolucao
+           ,@status)";
+
+                if (item.Socio != null)
+                {
+                    if (!string.IsNullOrEmpty(item.Socio.CPF))
+                        idSocio = socioRepositorio.GetByCPF(item.Socio.CPF).ID;
+                    if (!string.IsNullOrEmpty(item.Socio.RG))
+                        idSocio = socioRepositorio.GetByRG(item.Socio.RG).ID;
+                    if (!string.IsNullOrEmpty(item.Socio.Email))
+                        idSocio = socioRepositorio.GetBy(item.Socio.Email).ID;
+                }
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idsocio", idSocio);
+                parametros.Add("@data_locacao", item.DataLocacao);
+                parametros.Add("@data_devolucao", item.DataDevolucao);
+                parametros.Add("@status", item.Status);
+                ExecuteCommand(sql, parametros);
+
+                return item.ID;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+            finally
+            {
+                idSocio = -1;
+            }
         }
 
         public void Remove(Locacao item)
+        {
+            
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAllBy(Socio socio)
         {
             throw new NotImplementedException();
         }
@@ -25,6 +74,11 @@ namespace AdoNetDemo
         }
 
         public Locacao GetBy(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Locacao> GetAllBy(Socio socio)
         {
             throw new NotImplementedException();
         }

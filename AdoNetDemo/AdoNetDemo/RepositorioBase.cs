@@ -24,24 +24,19 @@ namespace AdoNetDemo
         /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns>dataReader</returns>
         protected IDataReader ExecuteReader(string query, Dictionary<string, object> ColumnsAndValues = null)
-        {
-            IDataReader dataReader = null;
-
+        {         
             try
             {
-                using (SqlCommand command = new SqlCommand())
-                {
-                    using (command.Connection = ConnectionFactory.CreateConnection())
-                    {
-                        command.CommandText = query;
-                        command.Connection.Open();
-                        if (ColumnsAndValues != null)
-                            foreach (var item in ColumnsAndValues)
-                                command.Parameters.AddWithValue(item.Key, item.Value);
+                SqlCommand command = new SqlCommand();
+                command.Connection = ConnectionFactory.CreateConnection();
+                command.CommandText = query;
+                command.Connection.Open();
+                if (ColumnsAndValues != null)
+                    foreach (var item in ColumnsAndValues)
+                        command.Parameters.AddWithValue(item.Key, item.Value);
 
-                        dataReader = command.ExecuteReader();
-                    }
-                }
+                IDataReader dataReader = command.ExecuteReader();
+                command.Dispose();
 
                 return dataReader;
             }
@@ -64,7 +59,7 @@ namespace AdoNetDemo
         {
             int result = 0;
             try
-            {                
+            {
                 using (SqlCommand command = new SqlCommand())
                 {
                     using (command.Connection = ConnectionFactory.CreateConnection())
@@ -94,27 +89,24 @@ namespace AdoNetDemo
         protected int GetNextId(string tableName)
         {
             int result = 0;
-            int _id;
 
             try
             {
                 using (IDataReader dataReader = ExecuteReader("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
                 {
-                    _id = dataReader.GetOrdinal("id");
-
                     if (dataReader.Read())
                     {
-                        if (dataReader.IsDBNull(_id))
+                        if (dataReader.IsDBNull(0))
                             result = 0;
                         else
-                            result = dataReader.GetInt32(_id);
-                    }                    
-                }
+                            result = dataReader.GetInt32(0);
+                    }
 
-                if (result == 0)
-                    return 1;
-                else
-                    return (result + 1);
+                    if (result == 0)
+                        return 1;
+                    else
+                        return (result + 1);
+                }
             }
             catch (SystemException ex)
             {

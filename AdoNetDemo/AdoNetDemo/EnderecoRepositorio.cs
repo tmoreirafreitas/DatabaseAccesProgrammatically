@@ -52,7 +52,7 @@ namespace AdoNetDemo
            ,@cep
            ,@bairro
            ,@cidade
-           ,@estado) SELECT SCOPE_IDENTITY()";
+           ,@estado)";
 
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
@@ -63,7 +63,9 @@ namespace AdoNetDemo
                 parametros.Add("@bairro", item.Bairro);
                 parametros.Add("@cidade", item.Cidade);
                 parametros.Add("@estado", item.Estado);
-                return ExecuteCommand(sql, parametros);
+                ExecuteCommand(sql, parametros);
+
+                return item.ID;
             }
             catch (SystemException ex)
             {

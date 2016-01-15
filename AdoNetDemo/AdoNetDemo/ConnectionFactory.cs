@@ -28,6 +28,7 @@ namespace AdoNetDemo
             sb.Append(database);
             sb.Append(user);
             sb.Append(password);
+            sb.Append(@";MultipleActiveResultSets=true;");
 
             return new SqlConnection(sb.ToString());
         }
