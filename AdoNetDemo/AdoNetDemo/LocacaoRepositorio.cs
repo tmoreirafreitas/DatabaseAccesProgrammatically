@@ -16,7 +16,6 @@ namespace AdoNetDemo
         {
             try
             {
-                item.ID = GetNextId("Locacao");
                 var sql = @"INSERT INTO [dbo].[Locacao]
            ([idsocio]
            ,[data_locacao]
