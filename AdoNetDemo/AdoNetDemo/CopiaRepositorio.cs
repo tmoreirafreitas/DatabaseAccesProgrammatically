@@ -32,17 +32,14 @@ namespace AdoNetDemo
                         if (!string.IsNullOrEmpty(item.Filme.Titulo))
                             item.Filme = filmeRepositorio.GetBy(item.Filme.Titulo);
 
-                item.ID = GetNextId("Copia");
-                var sql = @"INSERT INTO [dbo].[Copia] ([id] ,[idfilme] ,[datacopia] ,[situacao_copia]) " +
-@"VALUES (@id ,@idfilme ,@datacopia ,@situacao_copia)";
+                var sql = @"INSERT INTO [dbo].[Copia] ([idfilme] ,[datacopia] ,[situacao_copia]) " +
+@"VALUES (@idfilme ,@datacopia ,@situacao_copia);SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
                 parametros.Add("@idfilme", item.Filme.ID);
                 parametros.Add("@datacopia", item.DataCopia);
                 parametros.Add("@situacao_copia", item.SituacaoCopia);
-                ExecuteCommand(sql, parametros);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
             {

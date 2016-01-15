@@ -26,7 +26,7 @@ namespace AdoNetDemo
            (@idsocio
            ,@data_locacao
            ,@data_devolucao
-           ,@status)";
+           ,@status);SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 if (item.Socio != null)
                 {
@@ -43,9 +43,8 @@ namespace AdoNetDemo
                 parametros.Add("@data_locacao", item.DataLocacao);
                 parametros.Add("@data_devolucao", item.DataDevolucao);
                 parametros.Add("@status", item.Status);
-                ExecuteCommand(sql, parametros);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
             {

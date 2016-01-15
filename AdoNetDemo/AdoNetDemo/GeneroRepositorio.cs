@@ -13,13 +13,11 @@ namespace AdoNetDemo
         {
             try
             {
-                item.ID = GetNextId("Genero");
-                string sql = @"INSERT INTO [dbo].[Genero]([descricao]) VALUES (@descricao) SELECT SCOPE_IDENTITY()";
+                string sql = @"INSERT INTO [dbo].[Genero]([descricao]) VALUES (@descricao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@descricao", item.Descricao);
-                ExecuteCommand(sql, parametro);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
             {

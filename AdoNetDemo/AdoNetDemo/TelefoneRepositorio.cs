@@ -37,26 +37,21 @@ namespace AdoNetDemo
                     }
                 }
 
-                item.ID = GetNextId("Telefone");
                 string sql = @"INSERT INTO [dbo].[Telefone]
-           ([id]
-           ,[idsocio]
+           ([idsocio]
            ,[ddd]
            ,[numero])
      VALUES
-           (@id
-           ,@idsocio
+           (@idsocio
            ,@ddd
-           ,@numero)";
+           ,@numero);SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
                 parametros.Add("@idsocio", item.Socio.ID);
                 parametros.Add("@ddd", item.DDD);
                 parametros.Add("@numero", item.Numero);
-                ExecuteCommand(sql, parametros);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
             {

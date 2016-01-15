@@ -70,7 +70,7 @@ namespace AdoNetDemo
                             foreach (var item in ColumnsAndValues)
                                 command.Parameters.AddWithValue(item.Key, item.Value);
 
-                        result = command.ExecuteNonQuery();
+                        result = Convert.ToInt32(command.ExecuteScalar());
                     }
                 }
                 return result;

@@ -11,16 +11,14 @@ namespace AdoNetDemo
     {
         public int Insert(Ator item)
         {
-            string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome)";
+            string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
 
             try
             {
-                item.ID = GetNextId("Ator");
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@nome", item.Nome);
-                ExecuteCommand(sql, parametros);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametros);
             }
 
             catch (SystemException ex)

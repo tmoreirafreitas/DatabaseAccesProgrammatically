@@ -29,7 +29,6 @@ namespace AdoNetDemo
         {
             try
             {
-                item.ID = GetNextId("Filme");
                 var generos = generoRepositorio.GetAll();
                 var categorias = categoriaRepositorio.GetAll();
 
@@ -50,14 +49,15 @@ namespace AdoNetDemo
                                       ValorLocacao = categoria.ValorLocacao
                                   })).FirstOrDefault();
 
-                string sql = @"INSERT INTO [dbo].[Filme] ([id] ,[idgenero] ,[idcategoria] ,[titulo] ,[duracao]) " +
-@"VALUES (@id ,@idgenero ,@idcategoria ,@titulo ,@duracao) SELECT SCOPE_IDENTITY()";
+                string sql = @"INSERT INTO [dbo].[Filme] ([idgenero] ,[idcategoria] ,[titulo] ,[duracao]) " +
+@"VALUES (@idgenero ,@idcategoria ,@titulo ,@duracao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
                 parametros.Add("@idgenero", item.Genero.ID);
                 parametros.Add("@idcategoria", item.Categoria.ID);
                 parametros.Add("@titulo", item.Titulo);
                 parametros.Add("@duracao", item.Duracao);
+
                 return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)

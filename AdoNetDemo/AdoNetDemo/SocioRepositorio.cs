@@ -32,8 +32,6 @@ namespace AdoNetDemo
         {
             try
             {
-                item.ID = GetNextId("Categoria");
-
                 var idEndereco = 0;
                 if (item.Endereco != null)
                     idEndereco = enderecoRepositorio.Insert(item.Endereco);
@@ -42,33 +40,29 @@ namespace AdoNetDemo
                     telefoneRepositorio.Insert(telefone);
 
                 string sql = @"INSERT INTO [dbo].[Socio]
-           ([id]
-           ,[idEndereco]
+           ([idEndereco]
            ,[nome]
            ,[aniversario]
            ,[rg]
            ,[cpf]
            ,[email])
      VALUES
-           (@id
-           ,@idEndereco
+           (@idEndereco
            ,@nome
            ,@aniversario
            ,@rg
            ,@cpf
-           ,@email)";
+           ,@email);SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
                 parametros.Add("@idEndereco", item.Endereco.ID);
                 parametros.Add("@nome", item.Nome);
                 parametros.Add("@aniversario", item.Aniversario);
                 parametros.Add("@rg", item.RG);
                 parametros.Add("@cpf", item.CPF);
                 parametros.Add("@email", item.Email);
-                ExecuteCommand(sql, parametros);
 
-                return item.ID;
+                return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
             {
