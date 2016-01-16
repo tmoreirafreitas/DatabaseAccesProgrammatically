@@ -179,13 +179,13 @@ namespace AdoNetDemo
 
             if (dataReader != null)
             {
-                _id = dataReader.GetOrdinal("[id]");
-                _idEndereco = dataReader.GetOrdinal("[idEndereco]");
-                _nome = dataReader.GetOrdinal("[nome]");
-                _aniversario = dataReader.GetOrdinal("[aniversario]");
-                _rg = dataReader.GetOrdinal("[rg]");
-                _cpf = dataReader.GetOrdinal("[cpf]");
-                _email = dataReader.GetOrdinal("[email]");
+                _id = dataReader.GetOrdinal("id");
+                _idEndereco = dataReader.GetOrdinal("idEndereco");
+                _nome = dataReader.GetOrdinal("nome");
+                _aniversario = dataReader.GetOrdinal("aniversario");
+                _rg = dataReader.GetOrdinal("rg");
+                _cpf = dataReader.GetOrdinal("cpf");
+                _email = dataReader.GetOrdinal("email");
 
                 if (dataReader.IsDBNull(_id))
                     socio.ID = dataReader.GetInt32(_id);
