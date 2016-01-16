@@ -169,7 +169,7 @@ namespace AdoNetDemo
 
         protected override Copia Populate(System.Data.IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
                 _idfilme = dataReader.GetOrdinal("idfilme");
@@ -190,7 +190,7 @@ namespace AdoNetDemo
                 return copia;
             }
 
-            return null;
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

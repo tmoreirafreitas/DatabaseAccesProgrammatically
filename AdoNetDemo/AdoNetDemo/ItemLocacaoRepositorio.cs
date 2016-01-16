@@ -46,7 +46,7 @@ namespace AdoNetDemo
 
         protected override ItemLocacaoRepositorio Populate(System.Data.IDataReader dataReader)
         {
-            throw new NotImplementedException();
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

@@ -120,19 +120,24 @@ namespace AdoNetDemo
 
         protected override Categoria Populate(System.Data.IDataReader dataReader)
         {
-            Categoria item = new Categoria();
-            if (dataReader.Read())
+            if (dataReader != null || !dataReader.IsClosed)
             {
-                if (!dataReader.IsDBNull(0))
-                    item.ID = dataReader.GetInt32(0);
+                Categoria item = new Categoria();
+                if (dataReader.Read())
+                {
+                    if (!dataReader.IsDBNull(0))
+                        item.ID = dataReader.GetInt32(0);
 
-                if (!dataReader.IsDBNull(1))
-                    item.Descricao = dataReader.GetString(1);
+                    if (!dataReader.IsDBNull(1))
+                        item.Descricao = dataReader.GetString(1);
 
-                if (!dataReader.IsDBNull(2))
-                    item.ValorLocacao = dataReader.GetDecimal(2);
+                    if (!dataReader.IsDBNull(2))
+                        item.ValorLocacao = dataReader.GetDecimal(2);
+                }
+                return item;
             }
-            return item;
+
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

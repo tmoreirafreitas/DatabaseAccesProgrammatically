@@ -113,7 +113,7 @@ namespace AdoNetDemo
 
         protected override Atuacao Populate(System.Data.IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _idAtor = dataReader.GetOrdinal("idator");
                 _idFilme = dataReader.GetOrdinal("idfilme");
@@ -129,7 +129,7 @@ namespace AdoNetDemo
                 return atuacao;
             }
 
-            throw new ArgumentNullException("Objeto DataReader não instanciado...");
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

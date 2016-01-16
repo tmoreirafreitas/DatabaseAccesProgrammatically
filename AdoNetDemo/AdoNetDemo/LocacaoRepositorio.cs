@@ -270,7 +270,7 @@ WHERE id = @id";
                 return locacao;
             }
 
-            return null;
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

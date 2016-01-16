@@ -168,7 +168,7 @@ namespace AdoNetDemo
 
         protected override Telefone Populate(System.Data.IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
                 _idsocio = dataReader.GetOrdinal("idsocio");
@@ -182,7 +182,7 @@ namespace AdoNetDemo
                 return telefone;
             }
 
-            throw new ArgumentException();
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

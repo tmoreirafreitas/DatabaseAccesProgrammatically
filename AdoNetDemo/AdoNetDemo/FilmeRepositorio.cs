@@ -323,7 +323,7 @@ namespace AdoNetDemo
 
         protected override Filme Populate(System.Data.IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
                 _idgenero = dataReader.GetOrdinal("idgenero");
@@ -363,7 +363,7 @@ namespace AdoNetDemo
                 return filme;
             }
 
-            return null;
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

@@ -177,7 +177,7 @@ namespace AdoNetDemo
         {
             Socio socio = new Socio();
 
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
                 _idEndereco = dataReader.GetOrdinal("idEndereco");
@@ -211,7 +211,7 @@ namespace AdoNetDemo
                 return socio;
             }
 
-            throw new ArgumentException();
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }

@@ -106,18 +106,23 @@ namespace AdoNetDemo
 
         protected override Genero Populate(System.Data.IDataReader dataReader)
         {
-            var item = new Genero();
-
-            if (dataReader.Read())
+            if (dataReader != null || !dataReader.IsClosed)
             {
-                if (dataReader.IsDBNull(0))
-                    item.ID = dataReader.GetInt32(0);
+                var item = new Genero();
 
-                if (dataReader.IsDBNull(1))
-                    item.Descricao = dataReader.GetString(1);
+                if (dataReader.Read())
+                {
+                    if (dataReader.IsDBNull(0))
+                        item.ID = dataReader.GetInt32(0);
+
+                    if (dataReader.IsDBNull(1))
+                        item.Descricao = dataReader.GetString(1);
+                }
+
+                return item;
             }
 
-            return item;
+            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
         }
     }
 }
