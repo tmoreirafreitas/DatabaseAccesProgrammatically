@@ -27,11 +27,10 @@ namespace AdoNetDemo
         }
 
         public void Remove(Ator item)
-        {
-            string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
-
+        {           
             try
             {
+                string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 ExecuteCommand(sql, parametros);
@@ -45,10 +44,9 @@ namespace AdoNetDemo
 
         public void Update(Ator item)
         {
-            string sql = @"UPDATE [dbo].[Ator] SET [nome] = @nome WHERE id = @id";
-
             try
             {
+                string sql = @"UPDATE [dbo].[Ator] SET [nome] = @nome WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", item.ID);
                 parametros.Add("@nome", item.Nome);
@@ -63,10 +61,9 @@ namespace AdoNetDemo
 
         public Ator GetBy(int id)
         {
-            string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE id = @id";
-
             try
             {
+                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
                 return Populate(ExecuteReader(sql, parametros));
@@ -80,10 +77,9 @@ namespace AdoNetDemo
 
         public Ator GetBy(string nome)
         {
-            string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE nome = @nome";
-
             try
             {
+                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE nome = @nome";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@nome", nome);
                 return Populate(ExecuteReader(sql, parametros));
@@ -97,11 +93,10 @@ namespace AdoNetDemo
 
         public List<Ator> GetAll()
         {
-            var items = new List<Ator>();
-            string sql = @"SELECT [id],[nome] FROM [dbo].[Ator]";
-
             try
             {
+                var items = new List<Ator>();
+                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator]";
                 var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));

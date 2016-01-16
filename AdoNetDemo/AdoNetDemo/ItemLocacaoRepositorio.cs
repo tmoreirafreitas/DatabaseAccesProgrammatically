@@ -11,6 +11,7 @@ namespace AdoNetDemo
     {
         public int Insert(ItemLocacao item)
         {
+            
             throw new NotImplementedException();
         }
 

@@ -117,12 +117,28 @@ namespace AdoNetDemo
 
             if (!string.IsNullOrEmpty(item.RG))
             {
-                sql = @"UPDATE [dbo].[Socio] SET [id] = @id ,[nome] = @nome ,[aniversario] = @aniversario ,[email] = @email WHERE rg = @rg";
+                sql = @"UPDATE [dbo].[Socio]
+   SET [id] = @id
+      ,[idEndereco] = @idEndereco
+      ,[nome] = @nome
+      ,[aniversario] = @aniversario
+      ,[rg] = @rg
+      ,[cpf] = @cpf
+      ,[email] = @email
+ WHERE rg = @rg";
                 parametros.Add("@rg", item.RG);
             }
             else if (!string.IsNullOrEmpty(item.CPF))
             {
-                sql = @"UPDATE [dbo].[Socio] SET [id] = @id ,[nome] = @nome ,[aniversario] = @aniversario ,[email] = @email WHERE cpf = @cpf";
+                sql = @"UPDATE [dbo].[Socio]
+   SET [id] = @id
+      ,[idEndereco] = @idEndereco
+      ,[nome] = @nome
+      ,[aniversario] = @aniversario
+      ,[rg] = @rg
+      ,[cpf] = @cpf
+      ,[email] = @email
+ WHERE cpf = @cpf";
                 parametros.Add("@cpf", item.CPF);
             }
 
@@ -131,7 +147,14 @@ namespace AdoNetDemo
 
         public Socio GetBy(int id)
         {
-            string sql = @"SELECT [id] ,[idEndereco] ,[nome] ,[aniversario] ,[rg] ,[cpf] ,[email] FROM [dbo].[Socio]  WHERE [id] = @id";
+            string sql = @"SELECT [id]
+      ,[idEndereco]
+      ,[nome]
+      ,[aniversario]
+      ,[rg]
+      ,[cpf]
+      ,[email]
+  FROM [dbo].[Socio]  WHERE [id] = @id";
             var parametros = new Dictionary<string, object>();
             parametros.Add("@id", id);
             return Populate(ExecuteReader(sql, parametros));
@@ -139,7 +162,14 @@ namespace AdoNetDemo
 
         public Socio GetBy(string email)
         {
-            string sql = @"SELECT [id] ,[idEndereco] ,[nome] ,[aniversario] ,[rg] ,[cpf] ,[email] FROM [dbo].[Socio] WHERE [email] = @email";
+            string sql = @"SELECT [id]
+      ,[idEndereco]
+      ,[nome]
+      ,[aniversario]
+      ,[rg]
+      ,[cpf]
+      ,[email]
+  FROM [dbo].[Socio] WHERE [email] = @email";
             var parametros = new Dictionary<string, object>();
             parametros.Add("@email", email);
             return Populate(ExecuteReader(sql, parametros));
@@ -147,7 +177,14 @@ namespace AdoNetDemo
 
         public Socio GetByCPF(string cpf)
         {
-            string sql = @"SELECT [id] ,[idEndereco] ,[nome] ,[aniversario] ,[rg] ,[cpf] ,[email] FROM [dbo].[Socio] WHERE [cpf] = @cpf";
+            string sql = @"SELECT [id]
+      ,[idEndereco]
+      ,[nome]
+      ,[aniversario]
+      ,[rg]
+      ,[cpf]
+      ,[email]
+  FROM [dbo].[Socio] WHERE [cpf] = @cpf";
             var parametros = new Dictionary<string, object>();
             parametros.Add("@cpf", cpf);
             return Populate(ExecuteReader(sql, parametros));
@@ -155,7 +192,14 @@ namespace AdoNetDemo
 
         public Socio GetByRG(string rg)
         {
-            string sql = @"SELECT [id] ,[idEndereco] ,[nome] ,[aniversario] ,[rg] ,[cpf] ,[email] FROM [dbo].[Socio] WHERE [rg] = @rg";
+            string sql = @"SELECT [id]
+      ,[idEndereco]
+      ,[nome]
+      ,[aniversario]
+      ,[rg]
+      ,[cpf]
+      ,[email]
+  FROM [dbo].[Socio] WHERE [rg] = @rg";
             var parametros = new Dictionary<string, object>();
             parametros.Add("@rg", rg);
             return Populate(ExecuteReader(sql, parametros));
@@ -164,7 +208,14 @@ namespace AdoNetDemo
         public List<Socio> GetAll()
         {
             List<Socio> socios = new List<Socio>();
-            string sql = @"SELECT [id] ,[idEndereco] ,[nome] ,[aniversario] ,[rg] ,[cpf] ,[email] FROM [dbo].[Socio]";
+            string sql = @"SELECT [id]
+      ,[idEndereco]
+      ,[nome]
+      ,[aniversario]
+      ,[rg]
+      ,[cpf]
+      ,[email]
+  FROM [dbo].[Socio]";
             var dataReader = ExecuteReader(sql);
 
             while (dataReader.Read())

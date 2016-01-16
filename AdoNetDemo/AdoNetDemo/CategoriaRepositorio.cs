@@ -11,10 +11,11 @@ namespace AdoNetDemo
     {
         public int Insert(Categoria item)
         {
-            string sql = @"INSERT INTO [dbo].[Categoria]([descricao],[valor_locacao]) VALUES (@descricao, @valor_locacao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
-
             try
             {
+                string sql = @"INSERT INTO [dbo].[Categoria]([descricao],
+        [valor_locacao]) VALUES (@descricao,
+         @valor_locacao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@descricao", item.Descricao);
                 parametros.Add("@valor_locacao", item.ValorLocacao);
@@ -32,7 +33,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Categoria] WHERE ID = @ID OR descricao = @descricao";
+                string sql = @"DELETE FROM [dbo].[Categoria]
+      WHERE ID = @ID OR descricao = @descricao";
                 var parametros = new Dictionary<string, object>();
 
                 if (item.ID != null)
@@ -53,7 +55,10 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Categoria] SET [descricao] = @descricao, [valor_locacao] = @valor_locacao WHERE ID = @ID";
+                string sql = @"UPDATE [dbo].[Categoria]
+   SET [descricao] = @descricao
+      ,[valor_locacao] = @valor_locacao
+ WHERE ID = @ID";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@ID", item.ID);
                 parametros.Add("@descricao", item.Descricao);
@@ -71,7 +76,10 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[descricao],[valor_locacao] FROM [dbo].[Categoria] WHERE ID = @ID";
+                string sql = @"SELECT [id]
+      ,[descricao]
+      ,[valor_locacao]
+  FROM [dbo].[Categoria] WHERE ID = @ID";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@ID", id);
 
@@ -87,7 +95,10 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[descricao],[valor_locacao] FROM [dbo].[Categoria] WHERE descricao = @descricao";
+                string sql = @"SELECT [id]
+      ,[descricao]
+      ,[valor_locacao]
+  FROM [dbo].[Categoria] WHERE descricao = @descricao";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@descricao", descricao);
 
@@ -103,7 +114,10 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[descricao],[valor_locacao] FROM [dbo].[Categoria]";
+                string sql = @"SELECT [id]
+      ,[descricao]
+      ,[valor_locacao]
+  FROM [dbo].[Categoria]";
                 var items = new List<Categoria>();
                 var dataReader = ExecuteReader(sql);
 
