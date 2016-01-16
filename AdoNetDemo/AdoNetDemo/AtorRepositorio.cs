@@ -10,11 +10,10 @@ namespace AdoNetDemo
     public class AtorRepositorio : RepositorioBase<Ator>, IRepositorio<Ator>
     {
         public int Insert(Ator item)
-        {
-            string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
-
+        {          
             try
             {
+                string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@nome", item.Nome);
 
