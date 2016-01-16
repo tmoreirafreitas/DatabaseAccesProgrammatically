@@ -252,7 +252,7 @@ WHERE id = @id";
 
         protected override Locacao Populate(System.Data.IDataReader dataReader)
         {
-            if (dataReader != null)
+            if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
                 _idsocio = dataReader.GetOrdinal("idsocio");
