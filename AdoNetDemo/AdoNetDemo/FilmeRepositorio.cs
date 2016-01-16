@@ -16,9 +16,9 @@ namespace AdoNetDemo
         //duracao	    varchar
 
         private CategoriaRepositorio categoriaRepositorio { get { return new CategoriaRepositorio(); } }
-        private GeneroRepositorio    generoRepositorio    { get { return new GeneroRepositorio();    } }
-        private AtuacaoRepositorio   atuacaoRepositorio   { get { return new AtuacaoRepositorio();   } }
-        private CopiaRepositorio     copiaRepositorio     { get { return new CopiaRepositorio();     } }
+        private GeneroRepositorio generoRepositorio { get { return new GeneroRepositorio(); } }
+        private AtuacaoRepositorio atuacaoRepositorio { get { return new AtuacaoRepositorio(); } }
+        private CopiaRepositorio copiaRepositorio { get { return new CopiaRepositorio(); } }
         private int _id;
         private int _idgenero;
         private int _idcategoria;
@@ -71,9 +71,53 @@ namespace AdoNetDemo
             try
             {
                 copiaRepositorio.RemoveAllBy(item);
-                string sql = @"DELETE FROM [dbo].[Filme] WHERE titulo = @titulo";
+                string sql = @"DELETE FROM [dbo].[Filme] WHERE [titulo] = @titulo";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", item.Titulo);
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public void RemoveAllBy(Genero genero)
+        {
+            try
+            {
+                var filmes = GetAllBy(genero);
+                foreach (var filme in filmes)
+                {
+                    copiaRepositorio.RemoveAllBy(filme);
+                    atuacaoRepositorio.RemoveAllBy(filme);
+                }
+
+                string sql = @"DELETE FROM [dbo].[Filme] WHERE [idgenero] = @idgenero";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idgenero", genero.ID);
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public void RemoveAllBy(Categoria categoria)
+        {
+            try
+            {
+                var filmes = GetAllBy(categoria);
+                foreach (var filme in filmes)
+                {
+                    copiaRepositorio.RemoveAllBy(filme);
+                    atuacaoRepositorio.RemoveAllBy(filme);
+                }
+
+                string sql = @"DELETE FROM [dbo].[Filme] WHERE [idcategoria] = @idcategoria";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idcategoria", categoria.ID);
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
