@@ -185,6 +185,175 @@ WHERE id = @id";
             }
         }
 
+        public List<Locacao> GetAllBy(Socio socio, bool status)
+        {
+            try
+            {
+                var locacoes = new List<Locacao>();
+                string sql = @"SELECT [id]
+      ,[idsocio]
+      ,[data_locacao]
+      ,[data_devolucao]
+      ,[status]
+  FROM [dbo].[Locacao] WHERE [idsocio] = @idsocio AND [status] = @status";
+
+                if (socio != null)
+                {
+                    if (!string.IsNullOrEmpty(socio.CPF))
+                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
+                    if (!string.IsNullOrEmpty(socio.RG))
+                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Email))
+                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                }
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idsocio", idSocio);
+                parametros.Add("@status", status);
+                var dataReader = ExecuteReader(sql, parametros);
+
+                while (dataReader.Read())
+                    locacoes.Add(Populate(dataReader));
+
+                return locacoes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+            finally
+            {
+                idSocio = -1;
+            }
+        }
+
+        public List<Locacao> GetAllBy(bool status)
+        {
+            try
+            {
+                var locacoes = new List<Locacao>();
+                string sql = @"SELECT [id]
+      ,[idsocio]
+      ,[data_locacao]
+      ,[data_devolucao]
+      ,[status]
+  FROM [dbo].[Locacao] WHERE [status] = @status";
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@status", status);
+                var dataReader = ExecuteReader(sql, parametros);
+
+                while (dataReader.Read())
+                    locacoes.Add(Populate(dataReader));
+
+                return locacoes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Locacao> GetAllBy(DateTime dataLocacao)
+        {
+            try
+            {
+                var locacoes = new List<Locacao>();
+                string sql = @"SELECT [id]
+      ,[idsocio]
+      ,[data_locacao]
+      ,[data_devolucao]
+      ,[status]
+  FROM [dbo].[Locacao] WHERE [data_locacao] BETWEEN @data_locacao AND @dataHoje";
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@data_locacao", dataLocacao);
+                parametros.Add("@dataHoje", DateTime.Now);
+                var dataReader = ExecuteReader(sql, parametros);
+
+                while (dataReader.Read())
+                    locacoes.Add(Populate(dataReader));
+
+                return locacoes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Locacao> GetAllBy(DateTime dataLocacao, bool status)
+        {
+            try
+            {
+                var locacoes = new List<Locacao>();
+                string sql = @"SELECT [id]
+      ,[idsocio]
+      ,[data_locacao]
+      ,[data_devolucao]
+      ,[status]
+  FROM [dbo].[Locacao] WHERE [status] = @status AND [data_locacao] BETWEEN @data_locacao AND @dataHoje";
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@data_locacao", dataLocacao);
+                parametros.Add("@dataHoje", DateTime.Now);
+                parametros.Add("@status", status);
+                var dataReader = ExecuteReader(sql, parametros);
+
+                while (dataReader.Read())
+                    locacoes.Add(Populate(dataReader));
+
+                return locacoes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public List<Locacao> GetAllBy(Socio socio, DateTime dataLocacao)
+        {
+            try
+            {
+                var locacoes = new List<Locacao>();
+                string sql = @"SELECT [id]
+      ,[idsocio]
+      ,[data_locacao]
+      ,[data_devolucao]
+      ,[status]
+  FROM [dbo].[Locacao] WHERE [idsocio] = @idsocio AND [data_locacao] BETWEEN @data_locacao AND @dataHoje";
+
+                if (socio != null)
+                {
+                    if (!string.IsNullOrEmpty(socio.CPF))
+                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
+                    if (!string.IsNullOrEmpty(socio.RG))
+                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Email))
+                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                }
+
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idsocio", idSocio);
+                parametros.Add("@data_locacao", dataLocacao);
+                parametros.Add("@dataHoje", DateTime.Now);
+                var dataReader = ExecuteReader(sql, parametros);
+
+                while (dataReader.Read())
+                    locacoes.Add(Populate(dataReader));
+
+                return locacoes;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+            finally
+            {
+                idSocio = -1;
+            }
+        }
+
         public List<Locacao> GetAllBy(Socio socio)
         {
             try
