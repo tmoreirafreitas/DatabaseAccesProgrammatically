@@ -122,7 +122,7 @@ namespace AdoNetDemo
             }
         }
 
-        public Endereco GetBy(char [] cep)
+        public Endereco GetBy(char[] cep)
         {
             try
             {
@@ -170,13 +170,23 @@ namespace AdoNetDemo
                 _estado = dataReader.GetOrdinal("estado");
 
                 Endereco endereco = new Endereco();
-                endereco.ID = dataReader.GetInt32(_id);
-                endereco.Estado = dataReader.GetString(_estado);
-                endereco.Bairro = dataReader.GetString(_bairro);
-                endereco.CEP = dataReader.GetString(_cep);
-                endereco.Cidade = dataReader.GetString(_cidade);
-                endereco.Complemento = dataReader.GetString(_complemento);
-                endereco.Estado = dataReader.GetString(_estado);
+                if (!dataReader.IsDBNull(_id))
+                    endereco.ID = dataReader.GetInt32(_id);
+
+                if (!dataReader.IsDBNull(_estado))
+                    endereco.Estado = dataReader.GetString(_estado);
+
+                if (!dataReader.IsDBNull(_bairro))
+                    endereco.Bairro = dataReader.GetString(_bairro);
+
+                if (!dataReader.IsDBNull(_cep))
+                    endereco.CEP = dataReader.GetString(_cep);
+
+                if (!dataReader.IsDBNull(_cidade))
+                    endereco.Cidade = dataReader.GetString(_cidade);
+
+                if (!dataReader.IsDBNull(_complemento))
+                    endereco.Complemento = dataReader.GetString(_complemento);
 
                 return endereco;
             }

@@ -53,6 +53,16 @@ namespace AdoNetDemo
             }
         }
 
+        public void RemoveAllBy(Ator ator)
+        {
+
+        }
+
+        public void RemoveAllBy(Filme filme)
+        {
+
+        }
+
         public void Update(Atuacao item)
         {
             try

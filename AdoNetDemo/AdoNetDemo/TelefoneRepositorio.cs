@@ -176,8 +176,11 @@ namespace AdoNetDemo
                 _ddd = dataReader.GetOrdinal("ddd");
 
                 Telefone telefone = new Telefone();
-                telefone.DDD = dataReader.GetString(_ddd);
-                telefone.Numero = dataReader.GetString(_numero);
+                if (!dataReader.IsDBNull(_ddd))
+                    telefone.DDD = dataReader.GetString(_ddd);
+
+                if (!dataReader.IsDBNull(_numero))
+                    telefone.Numero = dataReader.GetString(_numero);
 
                 return telefone;
             }

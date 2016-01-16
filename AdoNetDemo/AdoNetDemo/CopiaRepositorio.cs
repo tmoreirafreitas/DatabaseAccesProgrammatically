@@ -177,14 +177,21 @@ namespace AdoNetDemo
                 _situacao_copia = dataReader.GetOrdinal("situacao_copia");
 
                 Copia copia = new Copia();
-                copia.ID = dataReader.GetInt32(_id);                
-                copia.DataCopia = dataReader.GetDateTime(_datacopia);
-                copia.SituacaoCopia = dataReader.GetBoolean(_situacao_copia);
+
+                if (!dataReader.IsDBNull(_id))
+                    copia.ID = dataReader.GetInt32(_id);
+                if (!dataReader.IsDBNull(_datacopia))
+                    copia.DataCopia = dataReader.GetDateTime(_datacopia);
+                if (!dataReader.IsDBNull(_situacao_copia))
+                    copia.SituacaoCopia = dataReader.GetBoolean(_situacao_copia);
 
                 if (idFilme == -1)
                 {
-                    idFilme = dataReader.GetInt32(_idfilme);
-                    copia.Filme = filmeRepositorio.GetBy(idFilme);
+                    if (!dataReader.IsDBNull(_idfilme))
+                    {
+                        idFilme = dataReader.GetInt32(_idfilme);
+                        copia.Filme = filmeRepositorio.GetBy(idFilme);
+                    }
                 }
 
                 return copia;

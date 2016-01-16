@@ -261,11 +261,20 @@ WHERE id = @id";
                 _status = dataReader.GetOrdinal("status");
 
                 Locacao locacao = new Locacao();
-                locacao.ID = dataReader.GetInt32(_id);
-                locacao.Socio = socioRepositorio.GetBy(dataReader.GetInt32(_idsocio));
-                locacao.DataLocacao = dataReader.GetDateTime(_data_locacao);
-                locacao.DataDevolucao = dataReader.GetDateTime(_data_devolucao);
-                locacao.Status = dataReader.GetBoolean(_status);
+                if (!dataReader.IsDBNull(_id))
+                    locacao.ID = dataReader.GetInt32(_id);
+
+                if (!dataReader.IsDBNull(_idsocio))
+                    locacao.Socio = socioRepositorio.GetBy(dataReader.GetInt32(_idsocio));
+
+                if (!dataReader.IsDBNull(_data_locacao))
+                    locacao.DataLocacao = dataReader.GetDateTime(_data_locacao);
+
+                if (!dataReader.IsDBNull(_data_devolucao))
+                    locacao.DataDevolucao = dataReader.GetDateTime(_data_devolucao);
+
+                if (!dataReader.IsDBNull(_status))
+                    locacao.Status = dataReader.GetBoolean(_status);
 
                 return locacao;
             }
