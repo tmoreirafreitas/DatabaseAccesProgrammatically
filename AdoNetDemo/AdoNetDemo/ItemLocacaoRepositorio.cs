@@ -7,7 +7,7 @@ using SVD.Model;
 
 namespace AdoNetDemo
 {
-    public class ItemLocacaoRepositorio : RepositorioBase<ItemLocacaoRepositorio>, IRepositorio<ItemLocacao>
+    public class ItemLocacaoRepositorio : RepositorioBase<ItemLocacao>, IRepositorio<ItemLocacao>
     {
         //[idlocacao]
         //[idcopia]
