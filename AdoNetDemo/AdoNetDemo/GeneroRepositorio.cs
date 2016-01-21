@@ -112,10 +112,10 @@ namespace AdoNetDemo
 
                 if (dataReader.Read())
                 {
-                    if (dataReader.IsDBNull(0))
+                    if (!dataReader.IsDBNull(0))
                         item.ID = dataReader.GetInt32(0);
 
-                    if (dataReader.IsDBNull(1))
+                    if (!dataReader.IsDBNull(1))
                         item.Descricao = dataReader.GetString(1);
                 }
 
