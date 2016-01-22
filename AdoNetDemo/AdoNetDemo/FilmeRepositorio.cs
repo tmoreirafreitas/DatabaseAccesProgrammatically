@@ -169,11 +169,17 @@ namespace AdoNetDemo
       ,[duracao]
   FROM [dbo].[Filme] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", id);
-                var filme = Populate(ExecuteReader(sql, parametros));
-                filme.Copias = copiaRepositorio.GetAllBy(filme);
+                parametros.Add("@id", id);          
 
-                return filme;
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+                item.Copias = copiaRepositorio.GetAllBy(item);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -193,10 +199,16 @@ namespace AdoNetDemo
   FROM [dbo].[Filme] WHERE titulo = @titulo";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@titulo", titulo);
-                var filme = Populate(ExecuteReader(sql, parametros));
-                filme.Copias = copiaRepositorio.GetAllBy(filme);
 
-                return filme;
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+                item.Copias = copiaRepositorio.GetAllBy(item);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -234,6 +246,10 @@ namespace AdoNetDemo
                     filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
                 }
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return filmes;
             }
@@ -273,6 +289,10 @@ namespace AdoNetDemo
                     filmes.Add(Populate(dataReader));
                 }
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return filmes;
             }
             catch (SystemException ex)
@@ -302,6 +322,10 @@ namespace AdoNetDemo
                     filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
                 }
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return filmes;
             }
@@ -342,6 +366,10 @@ namespace AdoNetDemo
                     filme.Copias = copiaRepositorio.GetAllBy(filme);
                     filmes.Add(Populate(dataReader));
                 }
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return filmes;
             }
@@ -400,6 +428,10 @@ namespace AdoNetDemo
                     filmes.Add(Populate(dataReader));
                 }
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return filmes;
             }
             catch (SystemException ex)
@@ -408,7 +440,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Filme Populate(System.Data.IDataReader dataReader)
+        protected override Filme Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {

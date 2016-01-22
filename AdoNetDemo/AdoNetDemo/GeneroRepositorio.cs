@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SVD.Model;
+using System.Data.SqlClient;
 
 namespace AdoNetDemo
 {
@@ -63,7 +64,14 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE ID = @ID";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@ID", id);
-                return Populate(ExecuteReader(sql, parametro));
+                var dataReader = ExecuteReader(sql, parametro);
+                var genero = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return genero;
             }
             catch (SystemException ex)
             {
@@ -78,7 +86,14 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE descricao = @descricao";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@descricao", descricao);
-                return Populate(ExecuteReader(sql, parametro));
+                var dataReader = ExecuteReader(sql, parametro);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -91,10 +106,17 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<Genero>();
-                string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero]";
+                string sql = @"SELECT [id]
+      ,[descricao]
+  FROM [dbo].[Genero]";
+
                 var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return items;
             }
@@ -104,20 +126,17 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Genero Populate(System.Data.IDataReader dataReader)
+        protected override Genero Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {
                 var item = new Genero();
 
-                if (dataReader.Read())
-                {
-                    if (!dataReader.IsDBNull(0))
-                        item.ID = dataReader.GetInt32(0);
+                if (!dataReader.IsDBNull(0))
+                    item.ID = dataReader.GetInt32(0);
 
-                    if (!dataReader.IsDBNull(1))
-                        item.Descricao = dataReader.GetString(1);
-                }
+                if (!dataReader.IsDBNull(1))
+                    item.Descricao = dataReader.GetString(1);
 
                 return item;
             }

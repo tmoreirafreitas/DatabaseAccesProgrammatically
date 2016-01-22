@@ -176,8 +176,14 @@ namespace AdoNetDemo
 WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
 
-                return Populate(ExecuteReader(sql, parametros));
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -215,6 +221,10 @@ WHERE id = @id";
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return locacoes;
             }
             catch (SystemException ex)
@@ -246,6 +256,10 @@ WHERE id = @id";
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return locacoes;
             }
             catch (SystemException ex)
@@ -273,6 +287,10 @@ WHERE id = @id";
 
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return locacoes;
             }
@@ -302,6 +320,10 @@ WHERE id = @id";
 
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return locacoes;
             }
@@ -341,6 +363,10 @@ WHERE id = @id";
 
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return locacoes;
             }
@@ -383,6 +409,10 @@ WHERE id = @id";
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return locacoes;
             }
             catch (SystemException ex)
@@ -411,6 +441,10 @@ WHERE id = @id";
                 while (dataReader.Read())
                     locacoes.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return locacoes;
             }
             catch (SystemException ex)
@@ -419,7 +453,7 @@ WHERE id = @id";
             }
         }
 
-        protected override Locacao Populate(System.Data.IDataReader dataReader)
+        protected override Locacao Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {

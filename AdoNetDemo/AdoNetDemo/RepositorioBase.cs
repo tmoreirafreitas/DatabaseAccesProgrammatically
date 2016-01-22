@@ -23,20 +23,17 @@ namespace AdoNetDemo
         /// <param name="query">query</param>
         /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
         /// <returns>dataReader</returns>
-        protected IDataReader ExecuteReader(string query, Dictionary<string, object> ColumnsAndValues = null)
-        {         
+        protected SqlDataReader ExecuteReader(string query, Dictionary<string, object> ColumnsAndValues = null)
+        {
+            SqlDataReader dataReader = null;
             try
             {
-                SqlCommand command = new SqlCommand();
-                command.Connection = ConnectionFactory.CreateConnection();
-                command.CommandText = query;
-                command.Connection.Open();
+                SqlCommand command = new SqlCommand(query, ConnectionFactory.CreateConnection());
                 if (ColumnsAndValues != null)
                     foreach (var item in ColumnsAndValues)
                         command.Parameters.AddWithValue(item.Key, item.Value);
 
-                IDataReader dataReader = command.ExecuteReader();
-                command.Dispose();
+                dataReader = command.ExecuteReader();
 
                 return dataReader;
             }
@@ -60,24 +57,23 @@ namespace AdoNetDemo
             int result = 0;
             try
             {
-                using (SqlCommand command = new SqlCommand())
+                using (SqlCommand command = new SqlCommand(query, ConnectionFactory.CreateConnection()))
                 {
-                    using (command.Connection = ConnectionFactory.CreateConnection())
-                    {
-                        command.CommandText = query;
-                        command.Connection.Open();
-                        if (ColumnsAndValues != null)
-                            foreach (var item in ColumnsAndValues)
-                                command.Parameters.AddWithValue(item.Key, item.Value);
+                    if (ColumnsAndValues != null)
+                        foreach (var item in ColumnsAndValues)
+                            command.Parameters.AddWithValue(item.Key, item.Value);
 
-                        result = Convert.ToInt32(command.ExecuteScalar());
-                    }
+                    result = Convert.ToInt32(command.ExecuteScalar());
                 }
                 return result;
             }
             catch (SystemException ex)
             {
                 throw new SystemException(ex.Message);
+            }
+            finally
+            {
+                ConnectionFactory.Fechar();
             }
         }
 
@@ -92,7 +88,7 @@ namespace AdoNetDemo
 
             try
             {
-                using (IDataReader dataReader = ExecuteReader("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
+                using (SqlDataReader dataReader = ExecuteReader("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
                 {
                     if (dataReader.Read())
                     {
@@ -114,6 +110,6 @@ namespace AdoNetDemo
             }
         }
 
-        protected abstract T Populate(IDataReader dataReader);
+        protected abstract T Populate(SqlDataReader dataReader);
     }
 }

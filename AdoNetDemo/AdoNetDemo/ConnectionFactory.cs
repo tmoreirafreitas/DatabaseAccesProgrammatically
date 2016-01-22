@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ namespace AdoNetDemo
     /// <summary>
     /// 
     /// </summary>
-    public class ConnectionFactory
+    public class ConnectionFactory : IDisposable
     {
+        private static SqlConnection connection;
+
         /// <summary>
         /// 
         /// </summary>
@@ -30,7 +33,24 @@ namespace AdoNetDemo
             sb.Append(password);
             sb.Append(@";MultipleActiveResultSets=true;");
 
-            return new SqlConnection(sb.ToString());
+            connection = new SqlConnection(sb.ToString());
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+
+            return connection;
+        }
+
+        public static void Fechar()
+        {
+            if (connection.State == ConnectionState.Open)
+                connection.Close();
+        }
+
+        public void Dispose()
+        {
+            Fechar();
+            GC.SuppressFinalize(this);
         }
     }
 }

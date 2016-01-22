@@ -123,6 +123,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     enderecos.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return enderecos;
             }
             catch (SystemException ex)
@@ -158,6 +162,10 @@ namespace AdoNetDemo
                     telefones.Add(tel);
                 }
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return telefones;
             }
             catch (SystemException ex)
@@ -166,7 +174,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Telefone Populate(System.Data.IDataReader dataReader)
+        protected override Telefone Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {

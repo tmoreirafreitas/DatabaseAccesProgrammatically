@@ -10,7 +10,7 @@ namespace AdoNetDemo
     public class AtorRepositorio : RepositorioBase<Ator>, IRepositorio<Ator>
     {
         public int Insert(Ator item)
-        {          
+        {
             try
             {
                 string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
@@ -27,7 +27,7 @@ namespace AdoNetDemo
         }
 
         public void Remove(Ator item)
-        {           
+        {
             try
             {
                 string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
@@ -66,7 +66,14 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE id = @id";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
 
             catch (SystemException ex)
@@ -82,7 +89,14 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE nome = @nome";
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@nome", nome);
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
 
             catch (SystemException ex)
@@ -101,6 +115,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return items;
             }
 
@@ -110,20 +128,17 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Ator Populate(System.Data.IDataReader dataReader)
+        protected override Ator Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {
                 var item = new Ator();
 
-                if (dataReader.Read())
-                {
-                    if (!dataReader.IsDBNull(0))
-                        item.ID = dataReader.GetInt32(0);
+                if (!dataReader.IsDBNull(0))
+                    item.ID = dataReader.GetInt32(0);
 
-                    if (!dataReader.IsDBNull(1))
-                        item.Nome = dataReader.GetString(1);
-                }
+                if (!dataReader.IsDBNull(1))
+                    item.Nome = dataReader.GetString(1);
 
                 return item;
             }

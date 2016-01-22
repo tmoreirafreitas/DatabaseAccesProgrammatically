@@ -155,9 +155,16 @@ namespace AdoNetDemo
       ,[cpf]
       ,[email]
   FROM [dbo].[Socio]  WHERE [id] = @id";
-            var parametros = new Dictionary<string, object>();
-            parametros.Add("@id", id);
-            return Populate(ExecuteReader(sql, parametros));
+            var parametro = new Dictionary<string, object>();
+            parametro.Add("@id", id);
+            var dataReader = ExecuteReader(sql, parametro);
+            var item = Populate(dataReader);
+
+            dataReader.Close();
+            dataReader.Dispose();
+            ConnectionFactory.Fechar();
+
+            return item;
         }
 
         public Socio GetBy(string email)
@@ -170,9 +177,16 @@ namespace AdoNetDemo
       ,[cpf]
       ,[email]
   FROM [dbo].[Socio] WHERE [email] = @email";
-            var parametros = new Dictionary<string, object>();
-            parametros.Add("@email", email);
-            return Populate(ExecuteReader(sql, parametros));
+            var parametro = new Dictionary<string, object>();
+            parametro.Add("@email", email);
+            var dataReader = ExecuteReader(sql, parametro);
+            var item = Populate(dataReader);
+
+            dataReader.Close();
+            dataReader.Dispose();
+            ConnectionFactory.Fechar();
+
+            return item;
         }
 
         public Socio GetByCPF(string cpf)
@@ -185,9 +199,16 @@ namespace AdoNetDemo
       ,[cpf]
       ,[email]
   FROM [dbo].[Socio] WHERE [cpf] = @cpf";
-            var parametros = new Dictionary<string, object>();
-            parametros.Add("@cpf", cpf);
-            return Populate(ExecuteReader(sql, parametros));
+            var parametro = new Dictionary<string, object>();
+            parametro.Add("@cpf", cpf);
+            var dataReader = ExecuteReader(sql, parametro);
+            var item = Populate(dataReader);
+
+            dataReader.Close();
+            dataReader.Dispose();
+            ConnectionFactory.Fechar();
+
+            return item;
         }
 
         public Socio GetByRG(string rg)
@@ -200,9 +221,16 @@ namespace AdoNetDemo
       ,[cpf]
       ,[email]
   FROM [dbo].[Socio] WHERE [rg] = @rg";
-            var parametros = new Dictionary<string, object>();
-            parametros.Add("@rg", rg);
-            return Populate(ExecuteReader(sql, parametros));
+            var parametro = new Dictionary<string, object>();
+            parametro.Add("@rg", rg);
+            var dataReader = ExecuteReader(sql, parametro);
+            var item = Populate(dataReader);
+
+            dataReader.Close();
+            dataReader.Dispose();
+            ConnectionFactory.Fechar();
+
+            return item;
         }
 
         public List<Socio> GetAll()
@@ -221,13 +249,15 @@ namespace AdoNetDemo
             while (dataReader.Read())
                 socios.Add(Populate(dataReader));
 
+            dataReader.Close();
+            dataReader.Dispose();
+            ConnectionFactory.Fechar();
+
             return socios;
         }        
 
-        protected override Socio Populate(System.Data.IDataReader dataReader)
-        {
-            Socio socio = new Socio();
-
+        protected override Socio Populate(System.Data.SqlClient.SqlDataReader dataReader)
+        {          
             if (dataReader != null || !dataReader.IsClosed)
             {
                 _id = dataReader.GetOrdinal("id");
@@ -237,6 +267,8 @@ namespace AdoNetDemo
                 _rg = dataReader.GetOrdinal("rg");
                 _cpf = dataReader.GetOrdinal("cpf");
                 _email = dataReader.GetOrdinal("email");
+
+                Socio socio = new Socio();
 
                 if (dataReader.IsDBNull(_id))
                     socio.ID = dataReader.GetInt32(_id);

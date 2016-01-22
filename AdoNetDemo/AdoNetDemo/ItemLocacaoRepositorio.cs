@@ -123,7 +123,14 @@ namespace AdoNetDemo
   FROM [dbo].[Item_Locacao] WHERE ID = @ID";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@ID", id);
-                return Populate(ExecuteReader(sql, parametro));
+                var dataReader = ExecuteReader(sql, parametro);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -142,7 +149,14 @@ namespace AdoNetDemo
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@idcopia", idCopia);
                 parametro.Add("@idlocacao", idLocacao);
-                return Populate(ExecuteReader(sql, parametro));
+                var dataReader = ExecuteReader(sql, parametro);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -163,6 +177,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return items;
             }
             catch (SystemException ex)
@@ -171,7 +189,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override ItemLocacao Populate(System.Data.IDataReader dataReader)
+        protected override ItemLocacao Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             _idlocacao = dataReader.GetOrdinal("idlocacao");
             _idcopia = dataReader.GetOrdinal("idcopia");

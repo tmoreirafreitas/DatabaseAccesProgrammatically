@@ -114,7 +114,14 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -130,7 +137,14 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@cep", cep);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -148,6 +162,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     enderecos.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return enderecos;
             }
             catch (SystemException ex)
@@ -156,7 +174,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Endereco Populate(System.Data.IDataReader dataReader)
+        protected override Endereco Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {

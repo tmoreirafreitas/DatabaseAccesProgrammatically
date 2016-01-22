@@ -37,7 +37,7 @@ namespace AdoNetDemo
       WHERE ID = @ID OR descricao = @descricao";
                 var parametros = new Dictionary<string, object>();
 
-                if (item.ID != null)
+                if (item.ID != 0)
                     parametros.Add("@ID", item.ID);
 
                 if (!string.IsNullOrEmpty(item.Descricao))
@@ -83,7 +83,14 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@ID", id);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -102,7 +109,14 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@descricao", descricao);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -124,6 +138,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return items;
             }
             catch (SystemException ex)
@@ -132,22 +150,20 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Categoria Populate(System.Data.IDataReader dataReader)
+        protected override Categoria Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {
                 Categoria item = new Categoria();
-                if (dataReader.Read())
-                {
-                    if (!dataReader.IsDBNull(0))
-                        item.ID = dataReader.GetInt32(0);
+                if (!dataReader.IsDBNull(0))
+                    item.ID = dataReader.GetInt32(0);
 
-                    if (!dataReader.IsDBNull(1))
-                        item.Descricao = dataReader.GetString(1);
+                if (!dataReader.IsDBNull(1))
+                    item.Descricao = dataReader.GetString(1);
 
-                    if (!dataReader.IsDBNull(2))
-                        item.ValorLocacao = dataReader.GetDecimal(2);
-                }
+                if (!dataReader.IsDBNull(2))
+                    item.ValorLocacao = dataReader.GetDecimal(2);
+
                 return item;
             }
 

@@ -55,12 +55,32 @@ namespace AdoNetDemo
 
         public void RemoveAllBy(Ator ator)
         {
-
+            try
+            {
+                string sql = @"DELETE FROM [dbo].[Atua] WHERE idator = @idator";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idator", ator.ID);
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public void RemoveAllBy(Filme filme)
         {
-
+            try
+            {
+                string sql = @"DELETE FROM [dbo].[Atua] WHERE idfilme = @idfilme";
+                var parametros = new Dictionary<string, object>();
+                parametros.Add("@idfilme", filme.ID);
+                ExecuteCommand(sql, parametros);
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
         }
 
         public void Update(Atuacao item)
@@ -94,7 +114,14 @@ namespace AdoNetDemo
                 parametros.Add("@idator", idator);
                 parametros.Add("@idfilme", idfilme);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -113,6 +140,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     atuacoes.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return atuacoes;
             }
             catch (SystemException ex)
@@ -121,7 +152,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Atuacao Populate(System.Data.IDataReader dataReader)
+        protected override Atuacao Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {

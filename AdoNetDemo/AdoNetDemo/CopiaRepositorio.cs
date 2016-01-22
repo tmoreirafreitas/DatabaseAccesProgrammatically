@@ -125,7 +125,14 @@ namespace AdoNetDemo
                 var parametros = new Dictionary<string, object>();
                 parametros.Add("@id", id);
 
-                return Populate(ExecuteReader(sql, parametros));
+                var dataReader = ExecuteReader(sql, parametros);
+                var item = Populate(dataReader);
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return item;
             }
             catch (SystemException ex)
             {
@@ -152,6 +159,10 @@ namespace AdoNetDemo
                 var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     copias.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
 
                 return copias;
             }
@@ -189,6 +200,10 @@ namespace AdoNetDemo
                 while (dataReader.Read())
                     copias.Add(Populate(dataReader));
 
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
                 return copias;
             }
             catch (SystemException ex)
@@ -203,7 +218,7 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Copia Populate(System.Data.IDataReader dataReader)
+        protected override Copia Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
             {
