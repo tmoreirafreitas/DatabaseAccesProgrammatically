@@ -154,13 +154,15 @@ namespace AdoNetDemo
         {
             try
             {
+                var items = new List<Categoria>();
                 string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
   FROM [dbo].[Categoria] WHERE [descricao] LIKE @descricao + '%'";
-                var items = new List<Categoria>();
-                var dataReader = ExecuteReader(sql);
 
+                Dictionary<string, object> parametro = new Dictionary<string, object>();
+                parametro.Add("@descricao", categoria);
+                var dataReader = ExecuteReader(sql, parametro);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
 
