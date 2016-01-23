@@ -150,6 +150,31 @@ namespace AdoNetDemo
             }
         }
 
+        public List<Categoria> GetAll(string categoria)
+        {
+            try
+            {
+                string sql = @"SELECT [id]
+      ,[descricao]
+      ,[valor_locacao]
+  FROM [dbo].[Categoria] [descricao] LIKE @descricao + '%'";
+                var items = new List<Categoria>();
+                var dataReader = ExecuteReader(sql);
+
+                while (dataReader.Read())
+                    items.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return items;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
         protected override Categoria Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
