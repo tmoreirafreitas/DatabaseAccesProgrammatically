@@ -157,8 +157,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
-  FROM [dbo].[Categoria] [descricao] LIKE @descricao + '%'
-WHERE [descricao] LIKE @descricao + '%'";
+  FROM [dbo].[Categoria] WHERE [descricao] LIKE @descricao + '%'";
                 var items = new List<Categoria>();
                 var dataReader = ExecuteReader(sql);
 
