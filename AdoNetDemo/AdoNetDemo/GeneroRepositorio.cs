@@ -134,7 +134,7 @@ namespace AdoNetDemo
                 string sql = @"SELECT [id]
       ,[descricao]
   FROM [dbo].[Genero] 
-  WHERE [descricao] LIKE '%' + @descricao + '%'";
+  WHERE [descricao] LIKE @descricao + '%'";
 
                 Dictionary<string, object> parametro = new Dictionary<string, object>();
                 parametro.Add("@descricao", descricao);
