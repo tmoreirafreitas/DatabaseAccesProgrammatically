@@ -126,6 +126,34 @@ namespace AdoNetDemo
             }
         }
 
+        public List<Genero> GetAll(string descricao)
+        {
+            try
+            {
+                var items = new List<Genero>();
+                string sql = @"SELECT [id]
+      ,[descricao]
+  FROM [dbo].[Genero] 
+  WHERE [descricao] LIKE '%' + @descricao + '%'";
+
+                Dictionary<string, object> parametro = new Dictionary<string, object>();
+                parametro.Add("@descricao", descricao);
+                var dataReader = ExecuteReader(sql, parametro);
+                while (dataReader.Read())
+                    items.Add(Populate(dataReader));
+
+                dataReader.Close();
+                dataReader.Dispose();
+                ConnectionFactory.Fechar();
+
+                return items;
+            }
+            catch (SystemException ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
         protected override Genero Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
             if (dataReader != null || !dataReader.IsClosed)
