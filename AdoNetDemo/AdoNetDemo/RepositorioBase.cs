@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdoNetDemo
 {
@@ -21,19 +17,18 @@ namespace AdoNetDemo
         /// e o parâmetro "values" é um array com os valores a serem consultados na tabela.
         /// </summary>
         /// <param name="query">query</param>
-        /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
+        /// <param name="columnsAndValues">columnsAndValues = null</param>
         /// <returns>dataReader</returns>
-        protected SqlDataReader ExecuteReader(string query, Dictionary<string, object> ColumnsAndValues = null)
+        protected SqlDataReader ExecuteReader(string query, Dictionary<string, object> columnsAndValues = null)
         {
-            SqlDataReader dataReader = null;
             try
             {
-                SqlCommand command = new SqlCommand(query, ConnectionFactory.CreateConnection());
-                if (ColumnsAndValues != null)
-                    foreach (var item in ColumnsAndValues)
+                var command = new SqlCommand(query, ConnectionFactory.CreateConnection());
+                if (columnsAndValues != null)
+                    foreach (var item in columnsAndValues)
                         command.Parameters.AddWithValue(item.Key, item.Value);
 
-                dataReader = command.ExecuteReader();
+                var dataReader = command.ExecuteReader();
 
                 return dataReader;
             }
@@ -45,22 +40,22 @@ namespace AdoNetDemo
 
         /// <summary>
         /// Método que executa para execução dos comandos Insert, Update e Delete
-        /// O primeiro argumento é uma quary sql. Exemplo: "INSERT INTO Category(Id, CategoryName) VALUES (@ID, @CategoryName)"
+        /// O primeiro argumento é uma quary sql. Exemplo: "INSERT INTO Category(Id, CategoryName) VALUES (@Id, @CategoryName)"
         /// O Segundo argumento opcional é um dicionário, temos uma par de string e um object, onde o primeiro é o parâmetro
-        /// da coluna e o segundo o seu respectivo valor. Exemplo: ColumnsAndValues.Add("@ID", element.ID)
+        /// da coluna e o segundo o seu respectivo valor. Exemplo: columnsAndValues.Add("@Id", element.Id)
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="ColumnsAndValues">Dictionary<string, object> ColumnsAndValues = null</param>
-        /// <returns></returns>
-        protected int ExecuteCommand(string query, Dictionary<string, object> ColumnsAndValues = null)
+        /// <param name="query">query</param>
+        /// <param name="columnsAndValues">columnsAndValues</param>
+        /// <returns>result</returns>
+        protected int ExecuteCommand(string query, Dictionary<string, object> columnsAndValues = null)
         {
-            int result = 0;
             try
             {
-                using (SqlCommand command = new SqlCommand(query, ConnectionFactory.CreateConnection()))
+                int result;
+                using (var command = new SqlCommand(query, ConnectionFactory.CreateConnection()))
                 {
-                    if (ColumnsAndValues != null)
-                        foreach (var item in ColumnsAndValues)
+                    if (columnsAndValues != null)
+                        foreach (var item in columnsAndValues)
                             command.Parameters.AddWithValue(item.Key, item.Value);
 
                     result = Convert.ToInt32(command.ExecuteScalar());
@@ -78,30 +73,26 @@ namespace AdoNetDemo
         }
 
         /// <summary>
-        /// Método que pega o próximo ID de uma entidade que será inserida na tabela.
+        /// Método que pega o próximo Id de uma entidade que será inserida na tabela.
         /// </summary>
         /// <param name="tableName">tableName</param>
-        /// <returns>ID</returns>
+        /// <returns>Id</returns>
         protected int GetNextId(string tableName)
         {
-            int result = 0;
+            var result = 0;
 
             try
             {
-                using (SqlDataReader dataReader = ExecuteReader("SELECT MAX(ID) FROM [dbo]." + "[" + tableName + "]"))
+                using (SqlDataReader dataReader = ExecuteReader("SELECT MAX(Id) FROM [dbo]." + "[" + tableName + "]"))
                 {
                     if (dataReader.Read())
                     {
-                        if (dataReader.IsDBNull(0))
-                            result = 0;
-                        else
-                            result = dataReader.GetInt32(0);
+                        result = dataReader.IsDBNull(0) ? 0 : dataReader.GetInt32(0);
                     }
 
                     if (result == 0)
                         return 1;
-                    else
-                        return (result + 1);
+                    return (result + 1);
                 }
             }
             catch (SystemException ex)

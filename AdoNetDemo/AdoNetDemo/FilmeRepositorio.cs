@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -49,7 +47,7 @@ namespace AdoNetDemo
                                       ValorLocacao = categoria.ValorLocacao
                                   })).FirstOrDefault();
 
-                string sql = @"INSERT INTO [dbo].[Filme]
+                const string sql = @"INSERT INTO [dbo].[Filme]
            ([idgenero]
            ,[idcategoria]
            ,[titulo]
@@ -60,11 +58,13 @@ namespace AdoNetDemo
            ,@titulo
            ,@duracao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idgenero", item.Genero.ID);
-                parametros.Add("@idcategoria", item.Categoria.ID);
-                parametros.Add("@titulo", item.Titulo);
-                parametros.Add("@duracao", item.Duracao);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@titulo", item.Titulo},
+                    {"@duracao", item.Duracao}
+                };
+                if (item.Genero != null) parametros.Add("@idgenero", item.Genero.ID);
+                if (item.Categoria != null) parametros.Add("@idcategoria", item.Categoria.ID);
 
                 return ExecuteCommand(sql, parametros);
             }
@@ -79,9 +79,8 @@ namespace AdoNetDemo
             try
             {
                 copiaRepositorio.RemoveAllBy(item);
-                string sql = @"DELETE FROM [dbo].[Filme] WHERE [titulo] = @titulo";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@titulo", item.Titulo);
+                const string sql = @"DELETE FROM [dbo].[Filme] WHERE [titulo] = @titulo";
+                var parametros = new Dictionary<string, object> {{"@titulo", item.Titulo}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -101,9 +100,8 @@ namespace AdoNetDemo
                     atuacaoRepositorio.RemoveAllBy(filme);
                 }
 
-                string sql = @"DELETE FROM [dbo].[Filme] WHERE [idgenero] = @idgenero";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idgenero", genero.ID);
+                const string sql = @"DELETE FROM [dbo].[Filme] WHERE [idgenero] = @idgenero";
+                var parametros = new Dictionary<string, object> {{"@idgenero", genero.ID}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -123,9 +121,8 @@ namespace AdoNetDemo
                     atuacaoRepositorio.RemoveAllBy(filme);
                 }
 
-                string sql = @"DELETE FROM [dbo].[Filme] WHERE [idcategoria] = @idcategoria";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idcategoria", categoria.ID);
+                const string sql = @"DELETE FROM [dbo].[Filme] WHERE [idcategoria] = @idcategoria";
+                var parametros = new Dictionary<string, object> {{"@idcategoria", categoria.ID}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -138,18 +135,20 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Filme]
+                const string sql = @"UPDATE [dbo].[Filme]
    SET [idgenero] = @idgenero
       ,[idcategoria] = @idcategoria
       ,[titulo] = @titulo
       ,[duracao] = @duracao
  WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
-                parametros.Add("@idgenero", item.Genero.ID);
-                parametros.Add("@idcategoria", item.Categoria.ID);
-                parametros.Add("@titulo", item.Titulo);
-                parametros.Add("@duracao", item.Duracao);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@id", item.ID},
+                    {"@idgenero", item.Genero.ID},
+                    {"@idcategoria", item.Categoria.ID},
+                    {"@titulo", item.Titulo},
+                    {"@duracao", item.Duracao}
+                };
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -162,15 +161,13 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", id);          
-
+                var parametros = new Dictionary<string, object> {{"@id", id}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
                 item.Copias = copiaRepositorio.GetAllBy(item);
@@ -191,15 +188,13 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE titulo = @titulo";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@titulo", titulo);
-
+                var parametros = new Dictionary<string, object> {{"@titulo", titulo}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
                 item.Copias = copiaRepositorio.GetAllBy(item);
@@ -220,7 +215,7 @@ namespace AdoNetDemo
         {
             if (categoria != null)
             {
-                if (categoria.ID == null)
+                if (categoria.ID == 0)
                     if (!string.IsNullOrEmpty(categoria.Descricao))
                         categoria = categoriaRepositorio.GetBy(categoria.Descricao);
             }
@@ -230,14 +225,13 @@ namespace AdoNetDemo
 
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE idcategoria = @idcategoria";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idcategoria", categoria.ID);
+                var parametros = new Dictionary<string, object> {{"@idcategoria", categoria.ID}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -263,7 +257,7 @@ namespace AdoNetDemo
         {
             if (genero != null)
             {
-                if (genero.ID == null)
+                if (genero.ID == 0)
                     if (!string.IsNullOrEmpty(genero.Descricao))
                         genero = generoRepositorio.GetBy(genero.Descricao);
             }
@@ -272,14 +266,13 @@ namespace AdoNetDemo
             var filmes = new List<Filme>();
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE idgenero = @idgenero";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idgenero", genero.ID);
+                var parametros = new Dictionary<string, object> {{"@idgenero", genero.ID}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -306,14 +299,13 @@ namespace AdoNetDemo
             var filmes = new List<Filme>();
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE titulo LIKE '%' + @titulo + '%'";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@titulo", titulo);
+                var parametros = new Dictionary<string, object> {{"@titulo", titulo}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -349,15 +341,15 @@ namespace AdoNetDemo
                     if (!string.IsNullOrEmpty(categoria.Descricao))
                         categoria = categoriaRepositorio.GetBy(categoria.Descricao);
 
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
       ,[duracao]
   FROM [dbo].[Filme] WHERE idgenero = @idgenero AND idcategoria = @idcategoria";
                 var parametros = new Dictionary<string, object>();
-                parametros.Add("@idgenero", genero.ID);
-                parametros.Add("@idcategoria", categoria.ID);
+                if (genero != null) parametros.Add("@idgenero", genero.ID);
+                if (categoria != null) parametros.Add("@idcategoria", categoria.ID);
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -383,7 +375,7 @@ namespace AdoNetDemo
         {
             try
             {
-                if (ator.ID == null)
+                if (ator.ID == 0)
                     ator = new AtorRepositorio().GetBy(ator.Nome);
 
                 var allAtuacoes = atuacaoRepositorio.GetAll();
@@ -413,7 +405,7 @@ namespace AdoNetDemo
             var filmes = new List<Filme>();
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idgenero]
       ,[idcategoria]
       ,[titulo]
@@ -442,47 +434,47 @@ namespace AdoNetDemo
 
         protected override Filme Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                _id = dataReader.GetOrdinal("id");
-                _idgenero = dataReader.GetOrdinal("idgenero");
-                _idcategoria = dataReader.GetOrdinal("idcategoria");
-                _titulo = dataReader.GetOrdinal("titulo");
-                _duracao = dataReader.GetOrdinal("duracao");
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                var filme = new Filme();
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(_id))
-                    filme.ID = dataReader.GetInt32(_id);
+            _id = dataReader.GetOrdinal("id");
+            _idgenero = dataReader.GetOrdinal("idgenero");
+            _idcategoria = dataReader.GetOrdinal("idcategoria");
+            _titulo = dataReader.GetOrdinal("titulo");
+            _duracao = dataReader.GetOrdinal("duracao");
 
-                if (!dataReader.IsDBNull(_idgenero))
-                    filme.Genero = generoRepositorio.GetBy(dataReader.GetInt32(_idgenero));
+            var filme = new Filme();
 
-                if (!dataReader.IsDBNull(_idcategoria))
-                    filme.Categoria = categoriaRepositorio.GetBy(dataReader.GetInt32(_idcategoria));
+            if (!dataReader.IsDBNull(_id))
+                filme.ID = dataReader.GetInt32(_id);
 
-                if (!dataReader.IsDBNull(_titulo))
-                    filme.Titulo = dataReader.GetString(_titulo);
+            if (!dataReader.IsDBNull(_idgenero))
+                filme.Genero = generoRepositorio.GetBy(dataReader.GetInt32(_idgenero));
 
-                if (!dataReader.IsDBNull(_duracao))
-                    filme.Duracao = dataReader.GetString(_duracao);
+            if (!dataReader.IsDBNull(_idcategoria))
+                filme.Categoria = categoriaRepositorio.GetBy(dataReader.GetInt32(_idcategoria));
 
-                var atuacoes = atuacaoRepositorio.GetAll();
-                var atores = (from atuacao in atuacoes
-                              where atuacao.Filme.ID == filme.ID
-                              select (new Ator
-                              {
-                                  ID = atuacao.Ator.ID,
-                                  Nome = atuacao.Ator.Nome,
-                                  Atuacoes = atuacao.Ator.Atuacoes
-                              })).ToList();
+            if (!dataReader.IsDBNull(_titulo))
+                filme.Titulo = dataReader.GetString(_titulo);
 
-                filme.AtuacoesAtores = atores;
+            if (!dataReader.IsDBNull(_duracao))
+                filme.Duracao = dataReader.GetString(_duracao);
 
-                return filme;
-            }
+            var atuacoes = atuacaoRepositorio.GetAll();
+            var atores = (from atuacao in atuacoes
+                where atuacao.Filme.ID == filme.ID
+                select (new Ator
+                {
+                    ID = atuacao.Ator.ID,
+                    Nome = atuacao.Ator.Nome,
+                    Atuacoes = atuacao.Ator.Atuacoes
+                })).ToList();
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            filme.AtuacoesAtores = atores;
+
+            return filme;
         }
     }
 }

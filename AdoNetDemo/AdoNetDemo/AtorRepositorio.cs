@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -13,10 +10,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@nome", item.Nome);
-
+                const string sql = @"INSERT INTO [dbo].[Ator]([nome]) VALUES (@nome);CAST(SCOPE_IDENTITY() AS INT);";
+                var parametros = new Dictionary<string, object> {{"@nome", item.Nome}};
                 return ExecuteCommand(sql, parametros);
             }
 
@@ -30,9 +25,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
+                const string sql = @"DELETE FROM [dbo].[Ator] WHERE id = @id";
+                var parametros = new Dictionary<string, object> {{"@id", item.ID}};
                 ExecuteCommand(sql, parametros);
             }
 
@@ -46,10 +40,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Ator] SET [nome] = @nome WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", item.ID);
-                parametros.Add("@nome", item.Nome);
+                const string sql = @"UPDATE [dbo].[Ator] SET [nome] = @nome WHERE id = @id";
+                var parametros = new Dictionary<string, object> {{"@id", item.ID}, {"@nome", item.Nome}};
                 ExecuteCommand(sql, parametros);
             }
 
@@ -63,9 +55,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", id);
+                const string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE id = @id";
+                var parametros = new Dictionary<string, object> {{"@id", id}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -86,9 +77,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE nome = @nome";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@nome", nome);
+                const string sql = @"SELECT [id],[nome] FROM [dbo].[Ator] WHERE nome = @nome";
+                var parametros = new Dictionary<string, object> {{"@nome", nome}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -110,7 +100,7 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<Ator>();
-                string sql = @"SELECT [id],[nome] FROM [dbo].[Ator]";
+                const string sql = @"SELECT [id],[nome] FROM [dbo].[Ator]";
                 var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
@@ -130,20 +120,20 @@ namespace AdoNetDemo
 
         protected override Ator Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                var item = new Ator();
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                if (!dataReader.IsDBNull(0))
-                    item.ID = dataReader.GetInt32(0);
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(1))
-                    item.Nome = dataReader.GetString(1);
+            var item = new Ator();
 
-                return item;
-            }
+            if (!dataReader.IsDBNull(0))
+                item.ID = dataReader.GetInt32(0);
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (!dataReader.IsDBNull(1))
+                item.Nome = dataReader.GetString(1);
+
+            return item;
         }
     }
 }

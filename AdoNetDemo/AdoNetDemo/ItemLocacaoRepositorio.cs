@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -15,7 +12,7 @@ namespace AdoNetDemo
 
         private int _idlocacao;
         private int _idcopia;
-        private int _valor_locacao;
+        private int _valorLocacao;
         private LocacaoRepositorio locacaoRepositorio { get { return new LocacaoRepositorio(); } }
         private CopiaRepositorio copiaRepositorio { get { return new CopiaRepositorio(); } }
 
@@ -23,7 +20,7 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Item_Locacao]
+                const string sql = @"INSERT INTO [dbo].[Item_Locacao]
            ([idlocacao]
            ,[idcopia]
            ,[valor_locacao])
@@ -32,10 +29,12 @@ namespace AdoNetDemo
            ,@idcopia
            ,@valor_locacao);CAST(SCOPE_IDENTITY() AS INT);";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idlocacao", item.Locacao.ID);
-                parametros.Add("@idcopia", item.Copia.ID);
-                parametros.Add("@valor_locacao", item.ValorLocacao);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idlocacao", item.Locacao.ID},
+                    {"@idcopia", item.Copia.ID},
+                    {"@valor_locacao", item.ValorLocacao}
+                };
 
                 return ExecuteCommand(sql, parametros);
             }
@@ -50,9 +49,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE ID = @ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@ID", item.ID);
+                const string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE Id = @Id";
+                var parametro = new Dictionary<string, object> {{"@Id", item.ID}};
                 ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -65,7 +63,7 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE idcopia = @idcopia";
+                const string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE idcopia = @idcopia";
                 var parametro = new Dictionary<string, object>();
                 parametro.Add("@idcopia", copia.ID);
                 ExecuteCommand(sql, parametro);
@@ -80,9 +78,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE idlocacao = @idlocacao";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@idlocacao", locacao.ID);
+                const string sql = @"DELETE FROM [dbo].[Item_Locacao] WHERE idlocacao = @idlocacao";
+                var parametro = new Dictionary<string, object> {{"@idlocacao", locacao.ID}};
                 ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -95,16 +92,18 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Item_Locacao]
+                const string sql = @"UPDATE [dbo].[Item_Locacao]
    SET [idlocacao] = @idlocacao
       ,[idcopia] = @idcopia
       ,[valor_locacao] = @valor_locacao
- WHERE ID = @ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@ID", item.ID);
-                parametro.Add("@idlocacao", item.Locacao.ID);
-                parametro.Add("@idcopia", item.Copia.ID);
-                parametro.Add("@valor_locacao", item.ValorLocacao);
+ WHERE Id = @Id";
+                var parametro = new Dictionary<string, object>
+                {
+                    {"@Id", item.ID},
+                    {"@idlocacao", item.Locacao.ID},
+                    {"@idcopia", item.Copia.ID},
+                    {"@valor_locacao", item.ValorLocacao}
+                };
                 ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -117,12 +116,11 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [idlocacao]
+                const string sql = @"SELECT [idlocacao]
       ,[idcopia]
       ,[valor_locacao]
-  FROM [dbo].[Item_Locacao] WHERE ID = @ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@ID", id);
+  FROM [dbo].[Item_Locacao] WHERE Id = @Id";
+                var parametro = new Dictionary<string, object> {{"@Id", id}};
                 var dataReader = ExecuteReader(sql, parametro);
                 var item = Populate(dataReader);
 
@@ -142,13 +140,11 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [idlocacao]
+                const string sql = @"SELECT [idlocacao]
       ,[idcopia]
       ,[valor_locacao]
   FROM [dbo].[Item_Locacao] WHERE [idcopia] = @idcopia AND [idlocacao] = @idlocacao";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@idcopia", idCopia);
-                parametro.Add("@idlocacao", idLocacao);
+                var parametro = new Dictionary<string, object> {{"@idcopia", idCopia}, {"@idlocacao", idLocacao}};
                 var dataReader = ExecuteReader(sql, parametro);
                 var item = Populate(dataReader);
 
@@ -169,7 +165,7 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<ItemLocacao>();
-                string sql = @"SELECT [idlocacao]
+                const string sql = @"SELECT [idlocacao]
       ,[idcopia]
       ,[valor_locacao]
   FROM [dbo].[Item_Locacao]";
@@ -193,25 +189,25 @@ namespace AdoNetDemo
         {
             _idlocacao = dataReader.GetOrdinal("idlocacao");
             _idcopia = dataReader.GetOrdinal("idcopia");
-            _valor_locacao = dataReader.GetOrdinal("valor_locacao");
+            _valorLocacao = dataReader.GetOrdinal("valor_locacao");
 
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                ItemLocacao item = new ItemLocacao();
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                if (!dataReader.IsDBNull(_idcopia))
-                    item.Copia = copiaRepositorio.GetBy(dataReader.GetInt32(_idcopia));
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(_idlocacao))
-                    item.Locacao = locacaoRepositorio.GetBy(dataReader.GetInt32(_idlocacao));
+            var item = new ItemLocacao();
 
-                if (!dataReader.IsDBNull(_valor_locacao))
-                    item.ValorLocacao = dataReader.GetDecimal(_valor_locacao);
+            if (!dataReader.IsDBNull(_idcopia))
+                item.Copia = copiaRepositorio.GetBy(dataReader.GetInt32(_idcopia));
 
-                return item;
-            }
+            if (!dataReader.IsDBNull(_idlocacao))
+                item.Locacao = locacaoRepositorio.GetBy(dataReader.GetInt32(_idlocacao));
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (!dataReader.IsDBNull(_valorLocacao))
+                item.ValorLocacao = dataReader.GetDecimal(_valorLocacao);
+
+            return item;
         }
     }
 }

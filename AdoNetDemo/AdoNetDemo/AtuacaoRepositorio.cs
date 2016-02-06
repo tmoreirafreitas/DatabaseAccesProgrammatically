@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -23,11 +20,13 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Atua] ([idator] ,[idfilme] ,[papel]) VALUES (@idator ,@idfilme ,@papel);SELECT CAST(SCOPE_IDENTITY() AS INT);";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idator", item.Ator.ID);
-                parametros.Add("@idfilme", item.Filme.ID);
-                parametros.Add("@papel", item.Papel);
+                const string sql = @"INSERT INTO [dbo].[Atua] ([idator] ,[idfilme] ,[papel]) VALUES (@idator ,@idfilme ,@papel);SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idator", item.Ator.ID},
+                    {"@idfilme", item.Filme.ID},
+                    {"@papel", item.Papel}
+                };
 
                 return ExecuteCommand(sql, parametros);
             }
@@ -41,10 +40,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Atua] WHERE idator = @idator AND idfilme = @idfilme";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idator", item.Ator.ID);
-                parametros.Add("@idfilme", item.Filme.ID);
+                const string sql = @"DELETE FROM [dbo].[Atua] WHERE idator = @idator AND idfilme = @idfilme";
+                var parametros = new Dictionary<string, object> {{"@idator", item.Ator.ID}, {"@idfilme", item.Filme.ID}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -57,9 +54,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Atua] WHERE idator = @idator";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idator", ator.ID);
+                const string sql = @"DELETE FROM [dbo].[Atua] WHERE idator = @idator";
+                var parametros = new Dictionary<string, object> {{"@idator", ator.ID}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -72,9 +68,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Atua] WHERE idfilme = @idfilme";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idfilme", filme.ID);
+                const string sql = @"DELETE FROM [dbo].[Atua] WHERE idfilme = @idfilme";
+                var parametros = new Dictionary<string, object> {{"@idfilme", filme.ID}};
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -87,11 +82,13 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Atua] SET [papel] = @papel WHERE idator = @idator AND idfilme = @idfilme";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@papel", item.Papel);
-                parametros.Add("@idator", item.Ator.ID);
-                parametros.Add("@idfilme", item.Filme.ID);
+                const string sql = @"UPDATE [dbo].[Atua] SET [papel] = @papel WHERE idator = @idator AND idfilme = @idfilme";
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@papel", item.Papel},
+                    {"@idator", item.Ator.ID},
+                    {"@idfilme", item.Filme.ID}
+                };
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -109,11 +106,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [idator] ,[idfilme] ,[papel] FROM [dbo].[Atua] WHERE idator = @idator AND idfilme = @idfilme";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idator", idator);
-                parametros.Add("@idfilme", idfilme);
-
+                const string sql = @"SELECT [idator] ,[idfilme] ,[papel] FROM [dbo].[Atua] WHERE idator = @idator AND idfilme = @idfilme";
+                var parametros = new Dictionary<string, object> {{"@idator", idator}, {"@idfilme", idfilme}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -134,7 +128,7 @@ namespace AdoNetDemo
             try
             {
                 var atuacoes = new List<Atuacao>();
-                string sql = @"SELECT [idator] ,[idfilme] ,[papel] FROM [dbo].[Atua]";
+                const string sql = @"SELECT [idator] ,[idfilme] ,[papel] FROM [dbo].[Atua]";
                 var dataReader = ExecuteReader(sql);
 
                 while (dataReader.Read())
@@ -154,23 +148,23 @@ namespace AdoNetDemo
 
         protected override Atuacao Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
+
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
+
+            _idAtor = dataReader.GetOrdinal("idator");
+            _idFilme = dataReader.GetOrdinal("idfilme");
+            _papel = dataReader.GetOrdinal("papel");
+
+            Atuacao atuacao = new Atuacao
             {
-                _idAtor = dataReader.GetOrdinal("idator");
-                _idFilme = dataReader.GetOrdinal("idfilme");
-                _papel = dataReader.GetOrdinal("papel");
+                Filme = filmeRepositorio.GetBy(dataReader.GetInt32(_idFilme)),
+                Ator = atorRepositorio.GetBy(dataReader.GetInt32(_idAtor)),
+                Papel = dataReader.GetString(_papel)
+            };
 
-                Atuacao atuacao = new Atuacao
-                {
-                    Filme = filmeRepositorio.GetBy(dataReader.GetInt32(_idFilme)),
-                    Ator = atorRepositorio.GetBy(dataReader.GetInt32(_idAtor)),
-                    Papel = dataReader.GetString(_papel)
-                };
-
-                return atuacao;
-            }
-
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            return atuacao;
         }
     }
 }

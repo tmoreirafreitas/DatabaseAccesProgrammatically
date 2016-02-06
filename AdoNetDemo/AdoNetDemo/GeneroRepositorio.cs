@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 using System.Data.SqlClient;
 
@@ -14,10 +11,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Genero]([descricao]) VALUES (@descricao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@descricao", item.Descricao);
-
+                const string sql = @"INSERT INTO [dbo].[Genero]([descricao]) VALUES (@descricao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                var parametro = new Dictionary<string, object> {{"@descricao", item.Descricao}};
                 return ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -30,9 +25,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Genero] WHERE ID=@ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@ID", item.ID);
+                const string sql = @"DELETE FROM [dbo].[Genero] WHERE Id=@Id";
+                var parametro = new Dictionary<string, object> {{"@Id", item.ID}};
                 ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -45,10 +39,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Genero] SET [descricao] = @descricao, WHERE ID = @ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@descricao", item.Descricao);
-                parametro.Add("@ID", item.ID);
+                const string sql = @"UPDATE [dbo].[Genero] SET [descricao] = @descricao, WHERE Id = @Id";
+                var parametro = new Dictionary<string, object> {{"@descricao", item.Descricao}, {"@Id", item.ID}};
                 ExecuteCommand(sql, parametro);
             }
             catch (SystemException ex)
@@ -61,9 +53,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE ID = @ID";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@ID", id);
+                const string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE Id = @Id";
+                var parametro = new Dictionary<string, object> {{"@Id", id}};
                 var dataReader = ExecuteReader(sql, parametro);
                 var genero = Populate(dataReader);
 
@@ -83,9 +74,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE descricao = @descricao";
-                var parametro = new Dictionary<string, object>();
-                parametro.Add("@descricao", descricao);
+                const string sql = @"SELECT [id],[descricao] FROM [dbo].[Genero] WHERE descricao = @descricao";
+                var parametro = new Dictionary<string, object> {{"@descricao", descricao}};
                 var dataReader = ExecuteReader(sql, parametro);
                 var item = Populate(dataReader);
 
@@ -106,7 +96,7 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<Genero>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
   FROM [dbo].[Genero]";
 
@@ -131,13 +121,12 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<Genero>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
   FROM [dbo].[Genero] 
   WHERE [descricao] LIKE @descricao + '%'";
 
-                Dictionary<string, object> parametro = new Dictionary<string, object>();
-                parametro.Add("@descricao", descricao);
+                var parametro = new Dictionary<string, object> {{"@descricao", descricao}};
                 var dataReader = ExecuteReader(sql, parametro);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
@@ -154,22 +143,22 @@ namespace AdoNetDemo
             }
         }
 
-        protected override Genero Populate(System.Data.SqlClient.SqlDataReader dataReader)
+        protected override Genero Populate(SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                var item = new Genero();
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                if (!dataReader.IsDBNull(0))
-                    item.ID = dataReader.GetInt32(0);
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(1))
-                    item.Descricao = dataReader.GetString(1);
+            var item = new Genero();
 
-                return item;
-            }
+            if (!dataReader.IsDBNull(0))
+                item.ID = dataReader.GetInt32(0);
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (!dataReader.IsDBNull(1))
+                item.Descricao = dataReader.GetString(1);
+
+            return item;
         }
     }
 }

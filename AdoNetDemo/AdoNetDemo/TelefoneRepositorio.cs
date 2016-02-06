@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -18,7 +15,7 @@ namespace AdoNetDemo
         private int _idsocio;
         private int _ddd;
         private int _numero;
-        private SocioRepositorio socioRepositorio { get { return new SocioRepositorio(); } }
+        private static SocioRepositorio SocioRepositorio { get { return new SocioRepositorio(); } }
 
         public int Insert(Telefone item)
         {
@@ -26,18 +23,18 @@ namespace AdoNetDemo
             {
                 if (item.Socio != null)
                 {
-                    if (item.Socio.ID == null)
+                    if (item.Socio.Id == 0)
                     {
-                        if (!string.IsNullOrEmpty(item.Socio.CPF.ToString()))
-                            item.Socio = socioRepositorio.GetByCPF(item.Socio.CPF);
-                        else if (!string.IsNullOrEmpty(item.Socio.RG.ToString()))
-                            item.Socio = socioRepositorio.GetByRG(item.Socio.RG);
+                        if (!string.IsNullOrEmpty(item.Socio.Cpf))
+                            item.Socio = SocioRepositorio.GetByCpf(item.Socio.Cpf);
+                        else if (!string.IsNullOrEmpty(item.Socio.Rg))
+                            item.Socio = SocioRepositorio.GetByRg(item.Socio.Rg);
                         else if (!string.IsNullOrEmpty(item.Socio.Email))
-                            item.Socio = socioRepositorio.GetBy(item.Socio.Email);
+                            item.Socio = SocioRepositorio.GetBy(item.Socio.Email);
                     }
                 }
 
-                string sql = @"INSERT INTO [dbo].[Telefone]
+                const string sql = @"INSERT INTO [dbo].[Telefone]
            ([idsocio]
            ,[ddd]
            ,[numero])
@@ -46,11 +43,12 @@ namespace AdoNetDemo
            ,@ddd
            ,@numero);SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", item.Socio.ID);
-                parametros.Add("@ddd", item.DDD);
-                parametros.Add("@numero", item.Numero);
-
+                var parametros = new Dictionary<string, object>
+                    {
+                        {"@ddd", item.DDD},
+                        {"@numero", item.Numero}
+                    };
+                if (item.Socio != null) parametros.Add("@idsocio", item.Socio.Id);
                 return ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -63,10 +61,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Telefone] WHERE ddd = @ddd AND numero = @numero";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@ddd", item.DDD);
-                parametros.Add("@numero", item.Numero);
+                const string sql = @"DELETE FROM [dbo].[Telefone] WHERE ddd = @ddd AND numero = @numero";
+                var parametros = new Dictionary<string, object> { { "@ddd", item.DDD }, { "@numero", item.Numero } };
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -79,9 +75,8 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Telefone] WHERE idsocio = @idsocio";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", socio.ID);
+                const string sql = @"DELETE FROM [dbo].[Telefone] WHERE idsocio = @idsocio";
+                var parametros = new Dictionary<string, object> { { "@idsocio", socio.Id } };
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -94,11 +89,13 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Telefone] SET [ddd] = @ddd ,[numero] = @numero WHERE idsocio = @idsocio";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", item.Socio.ID);
-                parametros.Add("@numero", item.Numero);
-                parametros.Add("@ddd", item.DDD);
+                const string sql = @"UPDATE [dbo].[Telefone] SET [ddd] = @ddd ,[numero] = @numero WHERE idsocio = @idsocio";
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idsocio", item.Socio.Id},
+                    {"@numero", item.Numero},
+                    {"@ddd", item.DDD}
+                };
 
                 ExecuteCommand(sql, parametros);
             }
@@ -118,7 +115,7 @@ namespace AdoNetDemo
             try
             {
                 var enderecos = new List<Telefone>();
-                string sql = @"SELECT [id] ,[idsocio] ,[ddd] ,[numero] FROM [SVDB].[dbo].[Telefone]";
+                const string sql = @"SELECT [id] ,[idsocio] ,[ddd] ,[numero] FROM [SVDB].[dbo].[Telefone]";
                 var dataReader = ExecuteReader(sql);
                 while (dataReader.Read())
                     enderecos.Add(Populate(dataReader));
@@ -141,29 +138,31 @@ namespace AdoNetDemo
             {
                 if (socio != null)
                 {
-                    if (!string.IsNullOrEmpty(socio.CPF.ToString()))
-                        socio = socioRepositorio.GetByCPF(socio.CPF);
-                    else if (!string.IsNullOrEmpty(socio.RG.ToString()))
-                        socio = socioRepositorio.GetByRG(socio.RG);
+                    if (!string.IsNullOrEmpty(socio.Cpf))
+                        socio = SocioRepositorio.GetByCpf(socio.Cpf);
+                    else if (!string.IsNullOrEmpty(socio.Rg))
+                        socio = SocioRepositorio.GetByRg(socio.Rg);
                     else if (!string.IsNullOrEmpty(socio.Email))
-                        socio = socioRepositorio.GetBy(socio.Email);
+                        socio = SocioRepositorio.GetBy(socio.Email);
                 }
 
                 var telefones = new List<Telefone>();
-                string sql = @"SELECT [id] ,[idsocio] ,[ddd] ,[numero] FROM [SVDB].[dbo].[Telefone] WHERE idsocio = @idsocio";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", socio.ID);
-                var dataReader = ExecuteReader(sql, parametros);
-                socio = socioRepositorio.GetBy(socio.ID);
-                while (dataReader.Read())
+                const string sql = @"SELECT [id] ,[idsocio] ,[ddd] ,[numero] FROM [SVDB].[dbo].[Telefone] WHERE idsocio = @idsocio";
+                if (socio != null)
                 {
-                    var tel = Populate(dataReader);
-                    tel.Socio = socio;
-                    telefones.Add(tel);
-                }
+                    var parametros = new Dictionary<string, object> { { "@idsocio", socio.Id } };
+                    var dataReader = ExecuteReader(sql, parametros);
+                    socio = SocioRepositorio.GetBy(socio.Id);
+                    while (dataReader.Read())
+                    {
+                        var tel = Populate(dataReader);
+                        tel.Socio = socio;
+                        telefones.Add(tel);
+                    }
 
-                dataReader.Close();
-                dataReader.Dispose();
+                    dataReader.Close();
+                    dataReader.Dispose();
+                }
                 ConnectionFactory.Fechar();
 
                 return telefones;
@@ -176,24 +175,31 @@ namespace AdoNetDemo
 
         protected override Telefone Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                _id = dataReader.GetOrdinal("id");
-                _idsocio = dataReader.GetOrdinal("idsocio");
-                _numero = dataReader.GetOrdinal("numero");
-                _ddd = dataReader.GetOrdinal("ddd");
+            const string msg = @"Objeto DataReader não foi inicializado ou está fechado...";
 
-                Telefone telefone = new Telefone();
-                if (!dataReader.IsDBNull(_ddd))
-                    telefone.DDD = dataReader.GetString(_ddd);
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(_numero))
-                    telefone.Numero = dataReader.GetString(_numero);
+            _id = dataReader.GetOrdinal("id");
+            _idsocio = dataReader.GetOrdinal("idsocio");
+            _numero = dataReader.GetOrdinal("numero");
+            _ddd = dataReader.GetOrdinal("ddd");
 
-                return telefone;
-            }
+            var telefone = new Telefone();
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (dataReader.IsDBNull(_id))
+                telefone.ID = dataReader.GetInt32(_id);
+
+            if (!dataReader.IsDBNull(_ddd))
+                telefone.DDD = dataReader.GetString(_ddd);
+
+            if (!dataReader.IsDBNull(_numero))
+                telefone.Numero = dataReader.GetString(_numero);
+
+            if (!dataReader.IsDBNull(_idsocio))
+                telefone.Socio = SocioRepositorio.GetBy(_idsocio);
+
+            return telefone;
         }
     }
 }

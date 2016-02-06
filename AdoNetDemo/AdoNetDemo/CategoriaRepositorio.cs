@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -13,12 +10,14 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Categoria]([descricao],
+                const string sql = @"INSERT INTO [dbo].[Categoria]([descricao],
         [valor_locacao]) VALUES (@descricao,
          @valor_locacao);SELECT CAST(SCOPE_IDENTITY() AS INT);";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@descricao", item.Descricao);
-                parametros.Add("@valor_locacao", item.ValorLocacao);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@descricao", item.Descricao},
+                    {"@valor_locacao", item.ValorLocacao}
+                };
 
                 return ExecuteCommand(sql, parametros);
             }
@@ -33,12 +32,12 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"DELETE FROM [dbo].[Categoria]
-      WHERE ID = @ID OR descricao = @descricao";
+                const string sql = @"DELETE FROM [dbo].[Categoria]
+      WHERE Id = @Id OR descricao = @descricao";
                 var parametros = new Dictionary<string, object>();
 
                 if (item.ID != 0)
-                    parametros.Add("@ID", item.ID);
+                    parametros.Add("@Id", item.ID);
 
                 if (!string.IsNullOrEmpty(item.Descricao))
                     parametros.Add("@descricao", item.Descricao);
@@ -55,14 +54,16 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"UPDATE [dbo].[Categoria]
+                const string sql = @"UPDATE [dbo].[Categoria]
    SET [descricao] = @descricao
       ,[valor_locacao] = @valor_locacao
- WHERE ID = @ID";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@ID", item.ID);
-                parametros.Add("@descricao", item.Descricao);
-                parametros.Add("@valor_locacao", item.ValorLocacao);
+ WHERE Id = @Id";
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@Id", item.ID},
+                    {"@descricao", item.Descricao},
+                    {"@valor_locacao", item.ValorLocacao}
+                };
                 ExecuteCommand(sql, parametros);
             }
             catch (SystemException ex)
@@ -76,13 +77,11 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
-  FROM [dbo].[Categoria] WHERE ID = @ID";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@ID", id);
-
+  FROM [dbo].[Categoria] WHERE Id = @Id";
+                var parametros = new Dictionary<string, object> {{"@Id", id}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -102,13 +101,11 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
   FROM [dbo].[Categoria] WHERE descricao = @descricao";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@descricao", descricao);
-
+                var parametros = new Dictionary<string, object> {{"@descricao", descricao}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -128,7 +125,7 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
   FROM [dbo].[Categoria]";
@@ -155,13 +152,12 @@ namespace AdoNetDemo
             try
             {
                 var items = new List<Categoria>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[descricao]
       ,[valor_locacao]
   FROM [dbo].[Categoria] WHERE [descricao] LIKE @descricao + '%'";
 
-                Dictionary<string, object> parametro = new Dictionary<string, object>();
-                parametro.Add("@descricao", categoria);
+                var parametro = new Dictionary<string, object> {{"@descricao", categoria}};
                 var dataReader = ExecuteReader(sql, parametro);
                 while (dataReader.Read())
                     items.Add(Populate(dataReader));
@@ -179,22 +175,22 @@ namespace AdoNetDemo
         }
         protected override Categoria Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                Categoria item = new Categoria();
-                if (!dataReader.IsDBNull(0))
-                    item.ID = dataReader.GetInt32(0);
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                if (!dataReader.IsDBNull(1))
-                    item.Descricao = dataReader.GetString(1);
+            if (dataReader == null)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(2))
-                    item.ValorLocacao = dataReader.GetDecimal(2);
+            var item = new Categoria();
+            if (!dataReader.IsDBNull(0))
+                item.ID = dataReader.GetInt32(0);
 
-                return item;
-            }
+            if (!dataReader.IsDBNull(1))
+                item.Descricao = dataReader.GetString(1);
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (!dataReader.IsDBNull(2))
+                item.ValorLocacao = dataReader.GetDecimal(2);
+
+            return item;
         }
     }
 }

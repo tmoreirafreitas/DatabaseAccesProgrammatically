@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AdoNetDemo
 {
@@ -13,7 +10,7 @@ namespace AdoNetDemo
     /// </summary>
     public class ConnectionFactory : IDisposable
     {
-        private static SqlConnection connection;
+        private static SqlConnection _connection;
 
         /// <summary>
         /// 
@@ -21,30 +18,30 @@ namespace AdoNetDemo
         /// <returns>SqlConnection</returns>
         public static SqlConnection CreateConnection()
         {
-            string server = @"Data Source=DESKTOP-49LVODE;";
-            string database = @"Initial Catalog=SVDB;";
-            string user = @"User ID=SVAdminUser;";
-            string password = @"Password=root@*741258";
+            const string server = @"Data Source=DESKTOP-49LVODE;";
+            const string database = @"Initial Catalog=SVDB;";
+            const string user = @"User Id=SVAdminUser;";
+            const string password = @"Password=root@*741258";
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append(server);
             sb.Append(database);
             sb.Append(user);
             sb.Append(password);
             sb.Append(@";MultipleActiveResultSets=true;");
 
-            connection = new SqlConnection(sb.ToString());
+            _connection = new SqlConnection(sb.ToString());
 
-            if (connection.State == System.Data.ConnectionState.Closed)
-                connection.Open();
+            if (_connection.State == ConnectionState.Closed)
+                _connection.Open();
 
-            return connection;
+            return _connection;
         }
 
         public static void Fechar()
         {
-            if (connection.State == ConnectionState.Open)
-                connection.Close();
+            if (_connection.State == ConnectionState.Open)
+                _connection.Close();
         }
 
         public void Dispose()

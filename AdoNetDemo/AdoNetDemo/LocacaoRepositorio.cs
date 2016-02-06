@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SVD.Model;
 
 namespace AdoNetDemo
@@ -17,10 +14,10 @@ namespace AdoNetDemo
 
         private int _id;
         private int _idsocio;
-        private int _data_locacao;
-        private int _data_devolucao;
+        private int _dataLocacao;
+        private int _dataDevolucao;
         private int _status;
-        private int idSocio = -1;
+        private int _idSocio = -1;
         private SocioRepositorio socioRepositorio { get { return new SocioRepositorio(); } }
         private ItemLocacaoRepositorio itemLocacaoRepositorio { get { return new ItemLocacaoRepositorio(); } }
 
@@ -28,7 +25,7 @@ namespace AdoNetDemo
         {
             try
             {
-                var sql = @"INSERT INTO [dbo].[Locacao]
+                const string sql = @"INSERT INTO [dbo].[Locacao]
            ([idsocio]
            ,[data_locacao]
            ,[data_devolucao]
@@ -41,19 +38,21 @@ namespace AdoNetDemo
 
                 if (item.Socio != null)
                 {
-                    if (!string.IsNullOrEmpty(item.Socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(item.Socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(item.Socio.RG))
-                        idSocio = socioRepositorio.GetByRG(item.Socio.RG).ID;
+                    if (!string.IsNullOrEmpty(item.Socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(item.Socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(item.Socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(item.Socio.Rg).Id;
                     if (!string.IsNullOrEmpty(item.Socio.Email))
-                        idSocio = socioRepositorio.GetBy(item.Socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(item.Socio.Email).Id;
                 }
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", idSocio);
-                parametros.Add("@data_locacao", item.DataLocacao);
-                parametros.Add("@data_devolucao", item.DataDevolucao);
-                parametros.Add("@status", item.Status);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idsocio", _idSocio},
+                    {"@data_locacao", item.DataLocacao},
+                    {"@data_devolucao", item.DataDevolucao},
+                    {"@status", item.Status}
+                };
 
                 return ExecuteCommand(sql, parametros);
             }
@@ -63,7 +62,7 @@ namespace AdoNetDemo
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -73,9 +72,8 @@ namespace AdoNetDemo
             {
                 itemLocacaoRepositorio.RemoveAllBy(item); // Remove todos os itens de locação.
 
-                string sql = @"DELETE FROM [dbo].[Locacao] WHERE [id]=@id";
+                const string sql = @"DELETE FROM [dbo].[Locacao] WHERE [id]=@id";
                 var parametros = new Dictionary<string, object>();
-
                 if (item.ID != 0)
                     parametros.Add("@id", item.ID);
 
@@ -97,19 +95,19 @@ namespace AdoNetDemo
 
                 if (socio != null)
                 {
-                    if (!string.IsNullOrEmpty(socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(socio.RG))
-                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(socio.Rg).Id;
                     if (!string.IsNullOrEmpty(socio.Email))
-                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(socio.Email).Id;
                 }
 
-                string sql = @"DELETE FROM [dbo].[Locacao] WHERE [idsocio]=@idsocio";
+                const string sql = @"DELETE FROM [dbo].[Locacao] WHERE [idsocio]=@idsocio";
                 var parametros = new Dictionary<string, object>();
 
-                if (socio.ID != 0)
-                    parametros.Add("@idsocio", idSocio);
+                if (socio != null && socio.Id != 0)
+                    parametros.Add("@idsocio", _idSocio);
 
                 ExecuteCommand(sql, parametros);
             }
@@ -119,7 +117,7 @@ namespace AdoNetDemo
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -136,20 +134,22 @@ namespace AdoNetDemo
 
                 if (item.Socio != null)
                 {
-                    if (!string.IsNullOrEmpty(item.Socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(item.Socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(item.Socio.RG))
-                        idSocio = socioRepositorio.GetByRG(item.Socio.RG).ID;
+                    if (!string.IsNullOrEmpty(item.Socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(item.Socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(item.Socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(item.Socio.Rg).Id;
                     if (!string.IsNullOrEmpty(item.Socio.Email))
-                        idSocio = socioRepositorio.GetBy(item.Socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(item.Socio.Email).Id;
                 }
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", idSocio);
-                parametros.Add("@data_locacao", item.DataLocacao);
-                parametros.Add("@data_devolucao", item.DataDevolucao);
-                parametros.Add("@status", item.Status);
-                parametros.Add("@id", item.ID);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idsocio", _idSocio},
+                    {"@data_locacao", item.DataLocacao},
+                    {"@data_devolucao", item.DataDevolucao},
+                    {"@status", item.Status},
+                    {"@id", item.ID}
+                };
 
                 ExecuteCommand(sql, parametros);
             }
@@ -159,7 +159,7 @@ namespace AdoNetDemo
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -167,15 +167,14 @@ namespace AdoNetDemo
         {
             try
             {
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
       ,[status]
   FROM [dbo].[Locacao] 
 WHERE id = @id";
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@id", id);
+                var parametros = new Dictionary<string, object> {{"@id", id}};
                 var dataReader = ExecuteReader(sql, parametros);
                 var item = Populate(dataReader);
 
@@ -196,7 +195,7 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
@@ -205,17 +204,15 @@ WHERE id = @id";
 
                 if (socio != null)
                 {
-                    if (!string.IsNullOrEmpty(socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(socio.RG))
-                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(socio.Rg).Id;
                     if (!string.IsNullOrEmpty(socio.Email))
-                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(socio.Email).Id;
                 }
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", idSocio);
-                parametros.Add("@status", status);
+                var parametros = new Dictionary<string, object> {{"@idsocio", _idSocio}, {"@status", status}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -233,7 +230,7 @@ WHERE id = @id";
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -242,15 +239,14 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
       ,[status]
   FROM [dbo].[Locacao] WHERE [status] = @status";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@status", status);
+                var parametros = new Dictionary<string, object> {{"@status", status}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -273,16 +269,18 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
       ,[status]
   FROM [dbo].[Locacao] WHERE [data_locacao] BETWEEN @data_locacao AND @dataHoje";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@data_locacao", dataLocacao);
-                parametros.Add("@dataHoje", DateTime.Now);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@data_locacao", dataLocacao},
+                    {"@dataHoje", DateTime.Now}
+                };
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -305,17 +303,19 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
       ,[status]
   FROM [dbo].[Locacao] WHERE [status] = @status AND [data_locacao] BETWEEN @data_locacao AND @dataHoje";
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@data_locacao", dataLocacao);
-                parametros.Add("@dataHoje", DateTime.Now);
-                parametros.Add("@status", status);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@data_locacao", dataLocacao},
+                    {"@dataHoje", DateTime.Now},
+                    {"@status", status}
+                };
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -338,7 +338,7 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
@@ -347,18 +347,20 @@ WHERE id = @id";
 
                 if (socio != null)
                 {
-                    if (!string.IsNullOrEmpty(socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(socio.RG))
-                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(socio.Rg).Id;
                     if (!string.IsNullOrEmpty(socio.Email))
-                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(socio.Email).Id;
                 }
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", idSocio);
-                parametros.Add("@data_locacao", dataLocacao);
-                parametros.Add("@dataHoje", DateTime.Now);
+                var parametros = new Dictionary<string, object>
+                {
+                    {"@idsocio", _idSocio},
+                    {"@data_locacao", dataLocacao},
+                    {"@dataHoje", DateTime.Now}
+                };
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -376,7 +378,7 @@ WHERE id = @id";
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -385,7 +387,7 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
@@ -394,16 +396,15 @@ WHERE id = @id";
 
                 if (socio != null)
                 {
-                    if (!string.IsNullOrEmpty(socio.CPF))
-                        idSocio = socioRepositorio.GetByCPF(socio.CPF).ID;
-                    if (!string.IsNullOrEmpty(socio.RG))
-                        idSocio = socioRepositorio.GetByRG(socio.RG).ID;
+                    if (!string.IsNullOrEmpty(socio.Cpf))
+                        _idSocio = socioRepositorio.GetByCpf(socio.Cpf).Id;
+                    if (!string.IsNullOrEmpty(socio.Rg))
+                        _idSocio = socioRepositorio.GetByRg(socio.Rg).Id;
                     if (!string.IsNullOrEmpty(socio.Email))
-                        idSocio = socioRepositorio.GetBy(socio.Email).ID;
+                        _idSocio = socioRepositorio.GetBy(socio.Email).Id;
                 }
 
-                var parametros = new Dictionary<string, object>();
-                parametros.Add("@idsocio", idSocio);
+                var parametros = new Dictionary<string, object> {{"@idsocio", _idSocio}};
                 var dataReader = ExecuteReader(sql, parametros);
 
                 while (dataReader.Read())
@@ -421,7 +422,7 @@ WHERE id = @id";
             }
             finally
             {
-                idSocio = -1;
+                _idSocio = -1;
             }
         }
 
@@ -430,7 +431,7 @@ WHERE id = @id";
             try
             {
                 var locacoes = new List<Locacao>();
-                string sql = @"SELECT [id]
+                const string sql = @"SELECT [id]
       ,[idsocio]
       ,[data_locacao]
       ,[data_devolucao]
@@ -455,34 +456,34 @@ WHERE id = @id";
 
         protected override Locacao Populate(System.Data.SqlClient.SqlDataReader dataReader)
         {
-            if (dataReader != null || !dataReader.IsClosed)
-            {
-                _id = dataReader.GetOrdinal("id");
-                _idsocio = dataReader.GetOrdinal("idsocio");
-                _data_locacao = dataReader.GetOrdinal("data_locacao");
-                _data_devolucao = dataReader.GetOrdinal("data_devolucao");
-                _status = dataReader.GetOrdinal("status");
+            const string msg = "Objeto DataReader não foi inicializado ou está fechado...";
 
-                Locacao locacao = new Locacao();
-                if (!dataReader.IsDBNull(_id))
-                    locacao.ID = dataReader.GetInt32(_id);
+            if (dataReader == null || dataReader.IsClosed)
+                throw new ArgumentNullException(msg);
 
-                if (!dataReader.IsDBNull(_idsocio))
-                    locacao.Socio = socioRepositorio.GetBy(dataReader.GetInt32(_idsocio));
+            _id = dataReader.GetOrdinal("id");
+            _idsocio = dataReader.GetOrdinal("idsocio");
+            _dataLocacao = dataReader.GetOrdinal("data_locacao");
+            _dataDevolucao = dataReader.GetOrdinal("data_devolucao");
+            _status = dataReader.GetOrdinal("status");
 
-                if (!dataReader.IsDBNull(_data_locacao))
-                    locacao.DataLocacao = dataReader.GetDateTime(_data_locacao);
+            var locacao = new Locacao();
+            if (!dataReader.IsDBNull(_id))
+                locacao.ID = dataReader.GetInt32(_id);
 
-                if (!dataReader.IsDBNull(_data_devolucao))
-                    locacao.DataDevolucao = dataReader.GetDateTime(_data_devolucao);
+            if (!dataReader.IsDBNull(_idsocio))
+                locacao.Socio = socioRepositorio.GetBy(dataReader.GetInt32(_idsocio));
 
-                if (!dataReader.IsDBNull(_status))
-                    locacao.Status = dataReader.GetBoolean(_status);
+            if (!dataReader.IsDBNull(_dataLocacao))
+                locacao.DataLocacao = dataReader.GetDateTime(_dataLocacao);
 
-                return locacao;
-            }
+            if (!dataReader.IsDBNull(_dataDevolucao))
+                locacao.DataDevolucao = dataReader.GetDateTime(_dataDevolucao);
 
-            throw new ArgumentNullException("Objeto DataReader não foi inicializado ou está fechado...");
+            if (!dataReader.IsDBNull(_status))
+                locacao.Status = dataReader.GetBoolean(_status);
+
+            return locacao;
         }
     }
 }
