@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SVD.Model
 {
+    [Serializable]
     public class Categoria
     {
         public int         ID           { get; set; }
@@ -15,13 +16,9 @@ namespace SVD.Model
 
         public bool AddFilme(Filme filme)
         {
-            if (filme != null)
-            {
-                Filmes.Add(filme);
-                return true;
-            }
-
-            return false;
+            if (filme == null) return false;
+            Filmes.Add(filme);
+            return true;
         }
     }
 }

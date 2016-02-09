@@ -8,13 +8,19 @@ namespace SVD.Model
 {
     public class Socio
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Nome { get; set; }
         public DateTime? Aniversario { get; set; }
-        public string RG { get; set; }
-        public string CPF { get; set; }
+        public string Rg { get; set; }
+        public string Cpf { get; set; }
         public string Email { get; set; }
-        private List<Telefone> telefones;
+        private readonly List<Telefone> _telefones;
+
+        public Socio()
+        {
+            _telefones = new List<Telefone>();
+        }
+
         public Endereco Endereco { get; set; }
 
         public void AddTelefone(Telefone telefone)
@@ -22,12 +28,12 @@ namespace SVD.Model
             if (telefone.Socio == null)
                 telefone.Socio = this;
 
-            telefones.Add(telefone);
+            _telefones.Add(telefone);
         }
 
         public List<Telefone> GetTelefones()
         {
-            return telefones;
+            return _telefones;
         }
     }
 }

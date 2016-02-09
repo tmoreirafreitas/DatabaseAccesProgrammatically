@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SVD.Model
 {
+    [Serializable]
     public class Genero
     {
         public int    ID        { get; set; }
