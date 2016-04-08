@@ -1,0 +1,174 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="TemplatePrincipal.master.cs" Inherits="SLF.TemplatePrincipal" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <link href="Content/simple-sidebar.css" rel="stylesheet" />
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <script src="Scripts/bootstrap.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/jquery-1.9.1.intellisense.js"></script>
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/jquery-1.9.1.min.js"></script>
+
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <style>
+        .caret.caret-up {
+            border-top-width: 0;
+            border-bottom: 4px solid #fff;
+        }
+        /* Remove the navbar's default margin-bottom and rounded borders */
+        .navbar {
+            margin-bottom: 0;
+            border-radius: 0;
+        }
+
+        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+        .row.content {
+            height: 767px;
+        }
+
+        /* Set gray background color and 100% height */
+        .sidenav {
+            padding-top: 20px;
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+
+        /* Set black background color, white text and some padding */
+        footer {
+            background-color: #555;
+            color: white;
+            padding: 15px;
+        }
+
+        /* On small screens, set height to 'auto' for sidenav and grid */
+        @media screen and (max-width: 767px) {
+            .sidenav {
+                height: auto;
+                padding: 15px;
+            }
+
+            .row.content {
+                height: auto;
+            }
+        }
+    </style>
+
+    <script>
+        $(document).on('click', '.nav-stacked li', function (e) {
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '.navbar-nav li', function (e) {
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.dropdown a.dropdown-toggle').on("click", function (e) {
+                $(this).next('ul').toggle();
+                e.stopPropagation();
+                e.preventDefault();
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">SVL Videos</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar" runat="server">
+                <ul class="nav navbar-nav" runat="server">
+                    <li runat="server" class="active" id="wfHome"><a href="Index.aspx">Home</a></li>
+                    <li runat="server" class="dropdown" id="wfCadastro"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Cadastro<span class="caret"></span></a>
+                        <ul runat="server" class="dropdown-menu" id="MenuCadastro">
+                            <li runat="server" id="wfGenero"><a href="WFGenero.aspx">Gênero</a></li>
+                            <li runat="server" id="wfCategoria"><a href="WFCategoria.aspx">Categoria</a></li>
+                            <li runat="server" id="wfFilme"><a href="WFFilme.aspx">Filme</a></li>
+                            <li runat="server" id="wfSocio"><a href="WFSocio.aspx">Sócio</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid text-left" runat="server">
+        <div class="row content" runat="server">
+            <div class="col-sm-2 sidenav" runat="server">
+                <ul class="nav nav-pills nav-stacked" runat="server" id="MenuGeneros">
+                    <li runat="server" id="acao"><a id="A16" runat="server" onserverclick="HtmlAnchor_Click">Ação</a></li>
+                    <li runat="server" id="animacao"><a runat="server" onserverclick="HtmlAnchor_Click">Animação</a></li>
+                    <li runat="server" id="aventura"><a id="A1" runat="server" onserverclick="HtmlAnchor_Click">Aventura</a></li>
+                    <li runat="server" id="biografia"><a id="A2" runat="server" onserverclick="HtmlAnchor_Click">Biografia</a></li>
+                    <li runat="server" id="classicos"><a id="A3" runat="server" onserverclick="HtmlAnchor_Click">Clássicos</a></li>
+                    <li runat="server" id="comedia"><a id="A4" runat="server" onserverclick="HtmlAnchor_Click">Comédia</a></li>
+                    <li runat="server" id="comediaRomantica"><a id="A5" runat="server" onserverclick="HtmlAnchor_Click">Comédia Romântica</a></li>
+                    <li runat="server" id="crime"><a id="A6" runat="server" onserverclick="HtmlAnchor_Click">Crime</a></li>
+                    <li runat="server" id="documentario"><a id="A7" runat="server" onserverclick="HtmlAnchor_Click">Documentário</a></li>
+                    <li runat="server" id="drama"><a id="A8" runat="server" onserverclick="HtmlAnchor_Click">Drama</a></li>
+                    <li runat="server" id="guerra"><a id="A9" runat="server" onserverclick="HtmlAnchor_Click">Gerra</a></li>
+                    <li runat="server" id="fantasia"><a id="A10" runat="server" onserverclick="HtmlAnchor_Click">Fantasia</a></li>
+                    <li runat="server" id="faroeste"><a id="A11" runat="server" onserverclick="HtmlAnchor_Click">Faroeste</a></li>
+                    <li runat="server" id="ficcaoCientifica"><a id="A12" runat="server" onserverclick="HtmlAnchor_Click">Ficção Científica</a></li>
+                    <li runat="server" id="musical"><a id="A13" runat="server" onserverclick="HtmlAnchor_Click">Musical</a></li>
+                    <li runat="server" id="suspense"><a id="A14" runat="server" onserverclick="HtmlAnchor_Click">Suspense</a></li>
+                    <li runat="server" id="terror"><a id="A15" runat="server" onserverclick="HtmlAnchor_Click">Terror</a></li>
+                </ul>
+            </div>
+
+            <div class="col-sm-8 text-left">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+
+                <span id="Message" runat="server" />
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="txtPesquisar" runat="server" class="form-control" placeholder="Pesquisar Filmes.." />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" runat="server" id="btnPesquisar">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="container-fluid text-center">
+        <p>Footer Text</p>
+    </footer>
+</body>
+</html>

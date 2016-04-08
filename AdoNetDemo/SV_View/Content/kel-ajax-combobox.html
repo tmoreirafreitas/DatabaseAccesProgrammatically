@@ -1,0 +1,29 @@
+<div ng-style="{ 'display': 'table', 'width' : width }" class="{{::uxUnique}}">
+    <div class="input-group" >
+        <input class="form-control" type="search" ng-model="userInput" ng-change="search()" ng-keydown="navigateByKey($event)" ng-model-options="{ debounce : { 'default' : 200 } }"/>
+        <div class="input-group-btn">
+            <button class="btn" ng-click="dropdown()" ng-keydown="navigateByKey($event)" tabindex="-1"><span class="glyphicon glyphicon-search"></span></button>
+        </div>
+    </div>
+    <div style="position: relative">
+        <div class="custom-combobox {{::uxUnique}}" ng-if="isShowList && resultList != undefined" >
+            <ul>
+                <li ng-click="selectRow(p)" ng-repeat="p in resultList"
+                    ng-mouseover="setHighlightedRow($index)"
+                    ng-mouseleave="setHighlightedRow(null)" ng-class="{'btn-primary' : $index == highlightedRow }" >&nbsp;{{p[selectedText]}}</li>
+            </ul>
+
+            <div class="custom-combox-navigation">
+                <div style="float: left; font-size: 10px; position: absolute; left: 2px; top: 1px;">{{pageNumber}} / {{totalPage}}</div>
+                <div style="float: left; font-size: 10px; position: absolute; left: 2px; top: 16px;">{{resultTotalRows}}</div>
+                <ul class="pagination pagination-sm">
+                    <li ng-mousedown="goToPreviousSegment()" ng-keydown="navigateByKey($event)" tabindex="-1"><a href="#" tabindex="-1"><i class="glyphicon glyphicon-fast-backward"></i></a></li>
+                    <li ng-mousedown="goToNextSegment()" ng-keydown="navigateByKey($event)" tabindex="-1"><a href="#" tabindex="-1"><i class="glyphicon glyphicon-fast-forward"></i></a></li>
+                    <li ng-mousedown="goToPreviousPage()" ng-keydown="navigateByKey($event)" tabindex="-1"><a href="#" tabindex="-1"><i class="glyphicon glyphicon-backward"></i></a></li>
+                    <li ng-mousedown="goToNextPage()" ng-keydown="navigateByKey($event)" tabindex="-1"><a href="#" tabindex="-1"><i class="glyphicon glyphicon-forward"></i></a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

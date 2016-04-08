@@ -1,0 +1,67 @@
+div.custom-combobox {
+    position: absolute;
+    cursor: default;
+    background-color: white;
+
+    top: 0;
+    left: 0px;
+    bottom: 0;
+    right: 0;
+
+    height: 236px;
+
+    border-width: 1px;
+    border-style:  solid;
+    border-color: darkgray;
+
+    -webkit-box-shadow: 3px 3px lightgray;
+    -moz-box-shadow: 3px 3px lightgray;
+    box-shadow: 3px 3px lightgray;
+
+    /*font-size: 10px;*/
+
+    z-index: 1000;
+}
+div.custom-combox-navigation {
+    position: absolute;
+
+    /*height: 240px;*/
+
+
+    top: 201px;
+    left: 0px;
+    bottom: 0;
+    right: 0;
+
+    height: 33px;
+
+    margin: 0;
+    padding: 0;
+
+    text-align: right;
+
+
+    background-color: lightgray;
+}
+div.custom-combobox ul {
+    padding: 0px;
+    list-style-position: inside;
+}
+div.custom-combobox > ul > li {
+    list-style-type: none;
+}
+/*.custom-combobox > ul > li:hover {*/
+/*background-color: blue;*/
+/*color: white;*/
+/*}*/
+/*div.highlight {*/
+    /*background-color : mediumblue;*/
+    /*color: white;*/
+/*}*/
+
+div.custom-combox-navigation .pagination {
+    margin: 2px !important;
+}
+
+
+/* ..bootstrap */

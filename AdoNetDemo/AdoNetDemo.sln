@@ -5,6 +5,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoNetDemo", "AdoNetDemo\Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVD.Model", "SVD.Model\SVD.Model.csproj", "{22D8D420-EBD8-4D00-98D8-2F801D5F6497}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{040F4F51-9F71-437A-BB76-E4EE4BB22E15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{68A119D4-2D3C-48B8-ABA6-0DAC284358C0}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVFUI", "SVFUI\SVFUI.csproj", "{82788754-08D6-4860-9979-2FD33FF87CA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +28,14 @@ Global
 		{22D8D420-EBD8-4D00-98D8-2F801D5F6497}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22D8D420-EBD8-4D00-98D8-2F801D5F6497}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22D8D420-EBD8-4D00-98D8-2F801D5F6497}.Release|Any CPU.Build.0 = Release|Any CPU
+		{040F4F51-9F71-437A-BB76-E4EE4BB22E15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{040F4F51-9F71-437A-BB76-E4EE4BB22E15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{040F4F51-9F71-437A-BB76-E4EE4BB22E15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{040F4F51-9F71-437A-BB76-E4EE4BB22E15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82788754-08D6-4860-9979-2FD33FF87CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82788754-08D6-4860-9979-2FD33FF87CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82788754-08D6-4860-9979-2FD33FF87CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82788754-08D6-4860-9979-2FD33FF87CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
